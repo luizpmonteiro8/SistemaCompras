@@ -58,7 +58,7 @@ public class CategoryService {
 		updateData(newObj, obj);		
 		try {
 			repo.save(newObj);		
-		} catch (DataIntegrityViolationException e) {
+		}catch (DataIntegrityViolationException e) {
 			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
 				throw new DataIntegrityException("Categoria já cadastrada!");
 			}
@@ -73,13 +73,14 @@ public class CategoryService {
 	}
 
 	@Transactional
-	public void delete(Long id) {		
-		try {
+	public void delete(Long id)  {		
+		try {			
 			repo.deleteById(id);		
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityException(
 					"Não é possível deletar categoria com produtos cadastrado!");
 		}
+		
 	}
 
 	public Page<Category> findPage(Integer page, Integer linesPerPage, String orderBy,

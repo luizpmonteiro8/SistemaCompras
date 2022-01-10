@@ -1,6 +1,7 @@
 package com.mensal.compras.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ public class Product implements Serializable {
 	@Column(unique = true)
 	private String name;
 	private boolean blocked;
-	private Double quantMin; 
+	private BigDecimal quantMin; 
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")

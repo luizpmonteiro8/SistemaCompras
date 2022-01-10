@@ -1,6 +1,7 @@
 package com.mensal.compras.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -22,7 +23,7 @@ public class ProductDTO implements Serializable {
 	private String name;
 	private boolean blocked;
 	private Long categoryId;
-	private Double quantMin;
+	private BigDecimal quantMin;
 	
 	public ProductDTO(Product obj) {
 		this.id = obj.getId();

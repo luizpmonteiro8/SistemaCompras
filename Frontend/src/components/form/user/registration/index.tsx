@@ -3,7 +3,7 @@ import { User } from 'app/models/user';
 import { useUserService } from 'app/services';
 import { UserForm } from './form';
 import { useRouter } from 'next/dist/client/router';
-import { mensagemErro, mensagemSucesso } from 'components';
+import { messageError, messageSucess } from 'components';
 
 export const UserRegistration = () => {
   const service = useUserService();
@@ -26,10 +26,10 @@ export const UserRegistration = () => {
       .save(user)
       .then((userSalvo) => {
         setUser(userSalvo);
-        mensagemSucesso('Salvo com sucesso!');
+        messageSucess('Salvo com sucesso!');
       })
       .catch((e) => {
-        mensagemErro(e.response.data.message);
+        messageError(e.response.data.message);
       });
   };
 

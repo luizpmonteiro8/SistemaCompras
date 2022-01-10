@@ -2,7 +2,7 @@ import { httpClient } from '../http';
 import { Credential } from '../models/user';
 import { User } from '../models/user';
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
-import { mensagemErro } from 'components';
+import { messageError } from 'components';
 
 const resourceURL = '/users';
 

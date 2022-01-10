@@ -1,6 +1,7 @@
 package com.mensal.compras.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -32,11 +33,16 @@ public class Stock implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private Double quantity;		
+	private BigDecimal quantity;		
 
 	@OneToOne
 	@JoinColumn(name="product_id",unique = true)
 	private Product product;
+	
+	@Setter(value = AccessLevel.NONE)
+	@JsonBackReference
+	@OneToMany(mappedBy="stock")
+	private List<EntraceExit> entraceExitList;
 	
 	@Setter(value = AccessLevel.NONE)
 	@JsonBackReference
@@ -48,12 +54,12 @@ public class Stock implements Serializable {
 	@OneToMany(mappedBy="stock")
 	private List<ItemPurchases> itemPurchasesList;
 	
-	public void addStock(Double quantity) {
-		this.quantity += quantity;
+	public void addStock(BigDecimal quantity) {
+		this.quantity= this.quantity.add(quantity);
 	}
 	
-	public void removeStock(Double quantity) {
-		this.quantity -= quantity;
+	public void removeStock(BigDecimal quantity) {
+		this.quantity= this.quantity.subtract(quantity);
 	}
 
 }

@@ -1,106 +1,122 @@
 import * as Styled from './styles';
-import { useState, useEffect } from 'react';
-import { usePurchasesService, useProductService } from 'app/services';
+import { useEffect, useState } from 'react';
 import { ItemPurchasesForm } from './form';
-import { mensagemErro, mensagemSucesso } from 'components';
-import { itemPurchaseDTO } from 'app/models/purchasesDTO';
+import { messageError, messageSucess } from 'components';
+import { itemPurchaseDTO, PurchasesDTO } from 'app/models/purchasesDTO';
 import { ItemPurchaseDTOListing } from 'components';
-import { useCookies } from 'react-cookie';
-import { Product } from 'app/models/product';
 import { useRouter } from 'next/dist/client/router';
+import { LoadAllCategory } from 'store/actions/category';
+import { connect, ConnectedProps } from 'react-redux';
+import { LoadAllProduct } from 'store/actions/product';
+import { Category } from 'app/models/category';
+import { Product } from 'app/models/product';
+import { addItemPurchasesUpdate } from 'store/actions/purchases';
+import { getItemCookie, setItemCookie, removeItemCookie, deleteItemCookie } from 'cookies/index';
 
-type props = {
-  itemPurchasesLoad: itemPurchaseDTO[];
-};
+interface Props extends PropsFromRedux {
+  purchases: PurchasesDTO;
+}
 
-export const ItemPurchasesRegistration = ({ itemPurchasesLoad }: props) => {
-  const [loading, setLoading] = useState<boolean>();
-  const [product, setProduct] = useState<Product[]>();
-  const productService = useProductService();
-  const [itemPurchasesArray, setItemPurchasesArray] = useState<itemPurchaseDTO[]>([]);
-  const [itemPurchases, setItemPurchases] = useState<itemPurchaseDTO>();
-
+const ItemPurchasesRegistration = (props: Props) => {
   const router = useRouter();
-  const { id } = router.query;
-
-  const [itemPurchasesCookie, setItemPurchasesCookie, removeItemPurchasesCookie] = useCookies(['itemPurchases']);
-  let idTemp = null;
-
-  if (itemPurchasesArray) {
-    idTemp = itemPurchasesArray.length;
-  }
+  const [renderItem, setRenderItem] = useState(getItemCookie);
 
   useEffect(() => {
-    productService
-      .loadAllProduct()
-      .then((product) => {
-        setProduct(product);
-      })
-      .catch((e) => {
-        mensagemErro(e);
-      });
-
-    //have cookie
-    if (typeof itemPurchasesCookie.itemPurchases !== 'undefined') {
-      setItemPurchasesArray(itemPurchasesCookie.itemPurchases);
-    }
-    //new purchases
-    if (typeof itemPurchasesLoad !== 'undefined') {
-      setItemPurchasesArray(itemPurchasesLoad);
-    }
-  }, [itemPurchasesLoad]);
-
-  const handleSubmit = (itemPurchases: itemPurchaseDTO) => {
     try {
-      itemPurchases.id = idTemp + 1;
-      setItemPurchasesArray((i) => [...i, itemPurchases]);
-      if (!id) {
-        saveCookie(itemPurchases);
+      props.loadCategory();
+      props.loadProduct();
+      if (props.purchases.itemPurchaseDTOList.length >= 1) {
+        setRenderItem(props.purchases.itemPurchaseDTOList);
       }
-      mensagemSucesso('Item adicionado');
-      setItemPurchases({ id: 0.00553, quantity: null, validaty: null, price: null, productId: null });
+    } catch (err) {
+      messageError('Erro no carregamento');
+    }
+  }, [props.purchases]);
+
+  const handleSubmit = (itemPurchases: itemPurchaseDTO, { resetForm, setValues }) => {
+    try {
+      const itemCookie: itemPurchaseDTO[] = getItemCookie();
+      if (!id) {
+        itemPurchases.id = itemCookie?.length >= 1 ? itemCookie.slice(-1)[0].id + 1 : 1;
+        saveCookie(itemPurchases);
+        resetForm();
+      } else {
+        const id = props.purchasesUpdate.itemPurchaseDTOList[props.purchasesUpdate.itemPurchaseDTOList.length - 1].id;
+        itemPurchases.id = id + 1;
+        props.addItemPurchases(itemPurchases);
+        console.log(props.purchasesUpdate);
+      }
+
+      messageSucess('Item adicionado');
     } catch (e) {
-      mensagemErro('Erro ao adicionar item');
+      messageError('Erro ao adicionar item');
     }
   };
 
-  //fix itemPurchasesArray with minus last item
-  const saveCookie = (itemPurchases) => {
-    const arrayCookie = itemPurchasesArray;
-    arrayCookie.push(itemPurchases);
-    setItemPurchasesCookie('itemPurchases', arrayCookie, {
-      path: '/',
-      expires: dateExpiration(),
+  const filterProductByCategory = (idCategory) => {
+    return props.product.filter((item) => {
+      if (item.category.id === idCategory) return item;
     });
   };
 
-  //sum 15 day date expires to cookie
-  const dateExpiration = () => {
-    const date = new Date();
-    let dateDay = date.getDate() + 15;
-    let dateMonth = date.getMonth() + 1;
-    let dateYear = date.getFullYear();
-    if (dateDay > 30) {
-      dateDay = dateDay - 30;
-      dateMonth = dateMonth + 1;
+  const saveCookie = (itemPurchases) => {
+    setItemCookie(itemPurchases);
+    setRenderItem(getItemCookie());
+  };
+
+  const deleteItem = (id) => {
+    if (!props.purchases.id) {
+      deleteItemCookie(id);
+      setRenderItem(getItemCookie());
     }
-    if (dateMonth > 12) {
-      dateMonth = dateMonth - 12;
-      dateYear = dateYear + 1;
-    }
-    const dateExpiration = new Date(dateYear + '/' + dateMonth + '/' + dateDay);
-    return dateExpiration;
   };
 
   return (
     <Styled.Wrapper>
-      <div className="card bg-light my-2 mx-auto col-md-8" style={{}}>
-        <h4 className="card-header ">Item da compra</h4>
-        <div className="card-body">
-          <ItemPurchasesForm itemPurchases={itemPurchases} product={product} onSubmit={handleSubmit} />
+      {!props.purchases.status?.includes('Entregue') && (
+        <div className="card bg-light my-2 mx-auto col-md-8" style={{}}>
+          <h4 className="card-header ">Item da compra</h4>
+          <div className="card-body">
+            {props.product?.length >= 1 && props.category?.length >= 1 && (
+              <ItemPurchasesForm
+                product={props.product}
+                category={props.category}
+                filterProductByCategory={filterProductByCategory}
+                onSubmit={handleSubmit}
+              />
+            )}
+          </div>
         </div>
-      </div>
-      {!!product && !!itemPurchasesArray && <ItemPurchaseDTOListing item={itemPurchasesArray} product={product} />}
+      )}
+      {typeof props.product !== 'undefined' && !!renderItem && (
+        <ItemPurchaseDTOListing
+          item={renderItem}
+          product={props.product}
+          deleteItemCookie={deleteItem}
+          deleteActive={props.purchases.status ? props.purchases.status.includes('Entregue') : false}
+        />
+      )}
     </Styled.Wrapper>
   );
 };
+
+const mapStateToProps = ({ purchases, category, product }) => {
+  return {
+    category: category.category as Category[],
+    product: product.product as Product[],
+    purchasesUpdate: purchases.purchasesUpdate as PurchasesDTO,
+    isLoading: purchases.isLoading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadCategory: () => dispatch(LoadAllCategory()),
+    loadProduct: () => dispatch(LoadAllProduct()),
+    addItemPurchases: (item) => dispatch(addItemPurchasesUpdate(item)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+export default connector(ItemPurchasesRegistration);

@@ -64,7 +64,7 @@ public class ProductController {
 
 	@PreAuthorize("hasAnyRole('ADMIN','WRITE_PRODUCT')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> delete(@RequestBody Product obj, @PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}

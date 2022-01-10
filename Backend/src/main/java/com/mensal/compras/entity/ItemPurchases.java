@@ -33,9 +33,9 @@ public class ItemPurchases implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;	
 
-	private Double quantity;
+	private BigDecimal quantity;
 	private BigDecimal price;
-	@JsonFormat(pattern = "dd/MM/yyyy" ,locale = "pt_BR")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date validaty;
 	
 	@JsonBackReference
@@ -48,7 +48,7 @@ public class ItemPurchases implements Serializable {
 	private Stock stock;
 	
 	public BigDecimal getSubTotal() {
-		return price.multiply(BigDecimal.valueOf(quantity));
+		return price.multiply(quantity);
 	}
 
 	@Override

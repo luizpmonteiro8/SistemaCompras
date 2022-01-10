@@ -1,5 +1,6 @@
 package com.mensal.compras.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class ProductService {
 
 	@Autowired
 	private ProductRepository repo;
-	
+
 	@Autowired
 	private CategoryRepository categoryRepo;
 
@@ -48,7 +49,7 @@ public class ProductService {
 
 	@Transactional
 	public Product insert(Product obj) {
-		Stock stock = Stock.builder().product(obj).quantity(0.0).build();
+		Stock stock = Stock.builder().product(obj).quantity(BigDecimal.ZERO).build();
 		obj.setId(null);
 
 		try {
@@ -68,12 +69,12 @@ public class ProductService {
 	public Product update(Product obj) {
 		newObj = findById(obj.getId());
 		updateData(newObj, obj);
-		Stock stock = stockRepo.findByProduct(obj);
-		stock.setProduct(newObj);
-		newObj.setStock(stock);
+		Stock newStock = stockRepo.findByProduct(obj);
+		newStock.setProduct(obj);
+
 		try {
 			repo.save(newObj);
-			stockRepo.save(stock);
+			stockRepo.save(newStock);
 		} catch (DataIntegrityViolationException e) {
 			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
 				throw new DataIntegrityException("Produto já cadastrada!");
@@ -88,6 +89,7 @@ public class ProductService {
 		newObj.setStock(obj.getStock());
 		newObj.setBlocked(obj.isBlocked());
 		newObj.setCategory(obj.getCategory());
+		newObj.setQuantMin(obj.getQuantMin());
 
 	}
 
@@ -98,21 +100,19 @@ public class ProductService {
 			repo.deleteById(id);
 			stockRepo.delete(stock);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException(
-					"Não é possível excluir uma produto que possui compras!");
+			throw new DataIntegrityException("Não é possível excluir uma produto que possui compras!");
 		}
 	}
 
-	public Page<Product> findPage(Integer page, Integer linesPerPage, String orderBy,
-			String direction) {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction),
-				orderBy);
+	public Page<Product> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
 	}
 
 	public Product fromDTO(ProductDTO objDTO) {
 		Category category = categoryRepo.findById(objDTO.getCategoryId()).get();
-		
-		return Product.builder().id(objDTO.getId()).name(objDTO.getName()).blocked(objDTO.isBlocked()).category(category).build();
+
+		return Product.builder().id(objDTO.getId()).name(objDTO.getName()).blocked(objDTO.isBlocked())
+				.category(category).quantMin(objDTO.getQuantMin()).build();
 	}
 }

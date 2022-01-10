@@ -1,57 +1,23 @@
 import BootstrapTable from 'react-bootstrap-table-next';
-import { useMarketService } from 'app/services/index';
 import { useState, useEffect } from 'react';
 import { Market } from 'app/models/market';
-import { Router, useRouter } from 'next/router';
-import { mensagemErro, mensagemSucesso } from 'components';
 import { Modal } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import * as Styled from './styles';
+import { connect, ConnectedProps } from 'react-redux';
+import { LoadAllMarket, DeleteMarket } from 'store/actions/market';
 
-export const MarketListing = () => {
-  const [market, setMarket] = useState<Market[]>();
-  const service = useMarketService();
-  const router = useRouter();
-  const { id } = router.query;
+type Props = PropsFromRedux;
 
+const MarketListing = (props: Props) => {
   const [marketDelete, setMarketDelete] = useState<Market>({ id: null, name: '', blocked: false, cnpj: null });
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    loading();
-  }, [id]);
-
-  const loading = () => {
-    service
-      .loadAllMarket()
-      .then((i) => {
-        setMarket(i);
-      })
-      .catch((e) => {
-        mensagemErro(e.response.data.message);
-        if (e.response.data.message === 'Access Denied') {
-          router.push('/');
-        }
-      });
-  };
-
-  const deleteMarket = (id) => {
-    service
-      .deleteMarket(id)
-      .then(() => {
-        mensagemSucesso('Deletado com sucesso!');
-        setMarket(
-          market.filter((i) => {
-            return i.id !== id;
-          }),
-        );
-      })
-      .catch((e) => {
-        mensagemErro(e.response.data.message);
-      });
-  };
+    props.loadAll();
+  }, []);
 
   const columns = [
     {
@@ -67,6 +33,7 @@ export const MarketListing = () => {
     {
       dataField: 'cnpj',
       text: 'CNPJ',
+      formatter: (cellContent, row) => <div>{row.cnpj === 0 ? '' : row.cnpj}</div>,
     },
     {
       dataField: 'blocked',
@@ -100,10 +67,10 @@ export const MarketListing = () => {
 
   return (
     <Styled.Wrapper>
-      {!!market && (
+      {props.market.length >= 1 && (
         <BootstrapTable
           keyField="id"
-          data={market}
+          data={props.market}
           columns={columns}
           noDataIndication="Nenhum valor encontrado."
           bootstrap4
@@ -112,8 +79,15 @@ export const MarketListing = () => {
           bordered={false}
         />
       )}
-
-      <Modal show={show} onHide={handleClose}>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        onKeyDown={(event) => {
+          if (event.keyCode == 13) {
+            console.log('aqui');
+          }
+        }}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Deletar</Modal.Title>
         </Modal.Header>
@@ -122,9 +96,10 @@ export const MarketListing = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button
+            autoFocus={true}
             variant="danger"
             onClick={() => {
-              deleteMarket(marketDelete.id);
+              props.delete(marketDelete.id);
               handleClose();
             }}
           >
@@ -138,3 +113,20 @@ export const MarketListing = () => {
     </Styled.Wrapper>
   );
 };
+
+const mapStateToProps = ({ market }) => {
+  return {
+    market: market.market as Market[],
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadAll: () => dispatch(LoadAllMarket()),
+    delete: (id) => dispatch(DeleteMarket(id)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+export default connector(MarketListing);

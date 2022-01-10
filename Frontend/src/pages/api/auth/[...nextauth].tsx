@@ -1,58 +1,65 @@
 import NextAuth from 'next-auth';
-import Providers from 'next-auth/providers';
 import { Credential } from 'app/models/user/index';
-import { httpClient } from 'app/http';
-import jwt from 'jsonwebtoken';
-
-type NextAuthSession = {
-  jwt: string;
-};
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 export default NextAuth({
   secret: process.env.NEXT_AUTH_SECRET,
   session: {
-    jwt: true,
-    maxAge: 2592000,
+    strategy: 'jwt',
   },
   jwt: {
-    signingKey: process.env.JWT_SIGNING_PRIVATE_KEY,
+    secret: process.env.JWT_SIGNING_PRIVATE_KEY,
+    maxAge: 2592000,
   },
   providers: [
-    Providers.Credentials({
+    CredentialsProvider({
       name: 'Credentials',
 
-      credentials: {},
+      credentials: {
+        email: { label: 'Username', type: 'text ', placeholder: 'jsmith' },
+        password: { label: 'Password', type: 'password' },
+      },
       async authorize(credentials: Credential) {
         if (!credentials.email && !credentials.password) {
-          return null;
+          throw new Error('Email e senha requerido.');
         }
-        console.log('teste');
         const credential: Credential = { email: credentials.email, password: credentials.password };
-        const response = await httpClient.post('/login', credential);
-        return { jwt: response.headers.authorization };
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/login`;
+        try {
+          const res = await fetch('http://localhost:8080/login', {
+            method: 'POST',
+            body: JSON.stringify(credential),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const response: Response = await res;
+          const authorization = { id: response.headers.get('Authorization') };
+          console.log('autorization', authorization);
+          if (authorization) {
+            return authorization;
+          } else {
+            return null;
+          }
+        } catch (err) {
+          throw new Error('Não foi possivel conectar com servidor.');
+        }
       },
     }),
   ],
   callbacks: {
-    jwt: async (token: NextAuthSession, response: NextAuthSession) => {
-      const isSignIn = !!response;
-      if (isSignIn) {
-        if (!response.jwt) {
-          return Promise.resolve({});
-        } else {
-          token.jwt = response.jwt;
-        }
-      }
-      return Promise.resolve(token);
-    },
-    session: async (session, token: NextAuthSession) => {
-      if (!token?.jwt) {
+    jwt: async ({ token, account }) => {
+      if (token.sub) {
+        return token;
+      } else {
         return null;
       }
-      const decodeToken: any = jwt.decode(token.jwt.slice(7));
-      session.user.email = decodeToken.sub.toString();
-      session.expires = decodeToken.exp.toString();
-      session.accessToken = token.jwt;
+    },
+    session: async ({ session, token }) => {
+      if (!token.sub) {
+        throw new Error('Email ou senha inválido!');
+      }
+      session.accessToken = token.sub;
       return { ...session };
     },
   },

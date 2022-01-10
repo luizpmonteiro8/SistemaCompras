@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.mensal.compras.dto.ItemPurchasesDTO;
@@ -25,6 +24,7 @@ import com.mensal.compras.entity.Market;
 import com.mensal.compras.entity.Product;
 import com.mensal.compras.entity.Purchases;
 import com.mensal.compras.entity.Stock;
+import com.mensal.compras.entity.enums.PurchasesStatus;
 import com.mensal.compras.repositories.ItemPurchasesRepository;
 import com.mensal.compras.repositories.MarketRepository;
 import com.mensal.compras.repositories.ProductRepository;
@@ -70,7 +70,6 @@ public class PurchasesService {
 	@Transactional
 	public Purchases insert(Purchases obj) {
 		obj.setId(null);
-		obj.setInstantDate(new Date());
 
 		List<Stock> stockList = new ArrayList<>();
 
@@ -82,7 +81,10 @@ public class PurchasesService {
 				stockList.add(item.getStock());
 			}
 			itemRepo.saveAll(obj.getItemPurchaseList());
-			stockRepo.saveAll(stockList);
+			if(obj.getStatus().contains(PurchasesStatus.DELIVERED.getDisplayName())) {
+				stockRepo.saveAll(stockList);
+			}
+			
 		} 
 		catch (DataIntegrityViolationException e) {
 			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
@@ -98,21 +100,32 @@ public class PurchasesService {
 	@Transactional
 	public Purchases update(Purchases obj) {
 		Purchases newObj = findById(obj.getId());
-		removeStock(newObj);
+		
+		try {
+			for (ItemPurchases item : newObj.getItemPurchaseList()) {
+				itemRepo.delete(item);
+			}
+		}
+		catch (Exception e) {
+			throw new DataIntegrityException("Erro ao alterar compra!");
+		}
+		
+		
 		newObj = updateData(newObj, obj);
 
 		List<Stock> stockList = new ArrayList<>();
 
 		try {
-			repo.deleteById(newObj.getId());
-			newObj.setId(null);
 			obj = repo.save(newObj);
 			for (ItemPurchases item : newObj.getItemPurchaseList()) {
+				item.setPurchase(obj);
 				item.getStock().addStock(item.getQuantity());
 				stockList.add(item.getStock());
 			}
-			itemRepo.saveAll(newObj.getItemPurchaseList());
-			stockRepo.saveAll(stockList);
+			//itemRepo.saveAll(newObj.getItemPurchaseList());
+			if(obj.getStatus().contains(PurchasesStatus.DELIVERED.getDisplayName())) {
+				stockRepo.saveAll(stockList);
+			}
 		} catch (DataIntegrityViolationException e) {
 			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
 				throw new DataIntegrityException("Venda já cadastrada!");
@@ -122,31 +135,27 @@ public class PurchasesService {
 		return obj;
 	}
 
-	private Stock removeStock(Purchases purchases) {
-		for (ItemPurchases item : purchases.getItemPurchaseList()) {
-			Stock stock = item.getStock();
-			stock.removeStock(item.getQuantity());
-			stockRepo.save(stock);
-		}
-
-		return null;
-	}
-
 	private Purchases updateData(Purchases newObj, Purchases obj) {
-		return Purchases.builder().id(newObj.getId()).instantDate(obj.getInstantDate())
+		return Purchases.builder().id(obj.getId()).date(obj.getDate())
 				.itemPurchaseList(obj.getItemPurchaseList()).market(obj.getMarket())
-				.status(obj.getStatus().getId()).build();
+				.status(PurchasesStatus.toEnum(obj.getStatus()).getId()).build();
 
 	}
 
 	@Transactional
 	public void delete(Long id) {
+		Purchases purchases = repo.findById(id).get();
 
 		try {
-			repo.deleteById(id);
+			if(purchases.getStatus().contains("Em rota")) {
+				repo.deleteById(id);
+			}else {
+				throw new DataIntegrityException(
+						"Não é possível excluir a venda que já foi entregue!");
+			}			
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityException(
-					"Não é possível excluir uma venda que possui produtos!");
+					"Não é possível excluir a venda!");
 		}
 	}
 
@@ -172,7 +181,7 @@ public class PurchasesService {
 		}
 
 		return Purchases.builder().itemPurchaseList(itemPurchasesList).market(market)
-				.status(objDTO.getStatus()).build();
+				.status(objDTO.getStatus()).date(objDTO.getDate()).build();
 	}
 
 	public Purchases fromDTOUpdate(PurchasesDTO objDTO) {
@@ -184,7 +193,7 @@ public class PurchasesService {
 		Market market = marketRepo.findById(objDTO.getMarketId()).get();
 
 		Purchases purchases = findById(uriId);
-		Date date = purchases.getInstantDate();
+		Date date = purchases.getDate();
 
 		List<ItemPurchases> itemPurchasesList = new ArrayList<ItemPurchases>();
 		for (ItemPurchasesDTO itemDTO : objDTO.getItemPurchaseDTOList()) {
@@ -199,6 +208,6 @@ public class PurchasesService {
 		}
 
 		return Purchases.builder().itemPurchaseList(itemPurchasesList).market(market)
-				.status(objDTO.getStatus()).instantDate(date).build();
+				.status(objDTO.getStatus()).date(date).build();
 	}
 }

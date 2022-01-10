@@ -1,7 +1,6 @@
 import * as Styled from './styles';
-import { useContext } from 'react';
 import { useRouter } from 'next/dist/client/router';
-import { signOut, useSession } from 'next-auth/client';
+import { signOut } from 'next-auth/react';
 
 export type MenuProps = {
   title?: string;
@@ -10,9 +9,8 @@ export type MenuProps = {
 export const Menu = ({ title }: MenuProps) => {
   const router = useRouter();
   const logout = () => {
-    router.push('/api/auth/signout');
-    // signOut();
-    // router.push('/');
+    signOut({ redirect: false });
+    router.push('/');
   };
 
   return (
@@ -20,9 +18,9 @@ export const Menu = ({ title }: MenuProps) => {
       <div className="row">
         <div className="col-md-12">
           <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div className="col-md-1">
+            <div className="col-md-3 ms-1">
               <a className="navbar-brand" href="/">
-                Navbar
+                Controle de compras
               </a>
             </div>
             <div className="col-md-6">
@@ -41,14 +39,14 @@ export const Menu = ({ title }: MenuProps) => {
                 <ul className="navbar-nav me-auto">
                   <li className="nav-item dropdown">
                     <a
-                      className="nav-link dropdown-toggle"
+                      className="nav-link dropdown-toggle h5"
                       data-bs-toggle="dropdown"
                       href="#"
                       role="button"
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      Cadastrar
+                      Cadastrar/Listar
                     </a>
                     <div className="dropdown-menu">
                       <a className="dropdown-item" href="/cadastros/mercados">
@@ -60,6 +58,9 @@ export const Menu = ({ title }: MenuProps) => {
                       <a className="dropdown-item" href="/cadastros/produtos">
                         Produtos
                       </a>
+                      <a className="dropdown-item" href="/cadastros/entradasaida">
+                        Entrada/Saida
+                      </a>
                       <div className="dropdown-divider"></div>
                       <a className="dropdown-item" href="/cadastros/usuario">
                         Usuário
@@ -68,7 +69,7 @@ export const Menu = ({ title }: MenuProps) => {
                   </li>
                   <li className="nav-item dropdown">
                     <a
-                      className="nav-link dropdown-toggle"
+                      className="nav-link dropdown-toggle h5"
                       data-bs-toggle="dropdown"
                       href="#"
                       role="button"
@@ -78,19 +79,36 @@ export const Menu = ({ title }: MenuProps) => {
                       Compras
                     </a>
                     <div className="dropdown-menu">
-                      <a className="dropdown-item" href="/compras/lista">
-                        Relatório Compras
-                      </a>
                       <a className="dropdown-item" href="/compras/cadastro">
                         Nova compras
+                      </a>
+                    </div>
+                  </li>
+                  <li className="nav-item dropdown">
+                    <a
+                      className="nav-link dropdown-toggle h5"
+                      data-bs-toggle="dropdown"
+                      href="#"
+                      role="button"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      Relatórios
+                    </a>
+                    <div className="dropdown-menu">
+                      <a className="dropdown-item" href="/relatorios/estoque">
+                        Estoque
+                      </a>
+                      <a className="dropdown-item" href="/compras/lista">
+                        Compras
                       </a>
                     </div>
                   </li>
                 </ul>
               </div>
             </div>
-            <div className="col-md-5">
-              <a className="button btn-link " onClick={() => logout()}>
+            <div className="col-md-3">
+              <a className="button btn-link .text-light" onClick={() => logout()}>
                 Sair
               </a>
             </div>

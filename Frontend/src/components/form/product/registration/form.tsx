@@ -5,24 +5,26 @@ import { validationScheme } from './validationScheme';
 import { useCategoryService } from 'app/services/index';
 import { Category } from 'app/models/category';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { mensagemErro } from 'components';
+import { messageError } from 'components';
 import { ProductDTO } from 'app/models/productDTO';
+import { AutoComplete } from 'components/common/autoComplete';
+import { convertDataAutoComplete } from 'components/common/autoComplete/convertdata';
 
 export type ProductFormProps = {
   product: ProductDTO;
-  onSubmit: (product: ProductDTO) => void;
+  onSubmit: (product: ProductDTO, { resetForm, setValues }) => void;
+  category: Category[];
 };
 
 const formSchema = {
   id: '',
   name: '',
+  quantMin: '',
   blocked: false,
   categoryId: null,
 };
 
-export const ProductForm = ({ product, onSubmit }: ProductFormProps) => {
-  const [category, setCategory] = useState<Category[]>();
-  const categoryService = useCategoryService();
+export const ProductForm = ({ product, onSubmit, category }: ProductFormProps) => {
   const [categoryValue, setCategoryValue] = useState<number>();
 
   const formik = useFormik<ProductDTO>({
@@ -31,17 +33,6 @@ export const ProductForm = ({ product, onSubmit }: ProductFormProps) => {
     validationSchema: validationScheme,
     enableReinitialize: true,
   });
-
-  useEffect(() => {
-    categoryService
-      .loadAllCategory()
-      .then((category) => {
-        setCategory(category);
-      })
-      .catch((e) => {
-        mensagemErro(e);
-      });
-  }, []);
 
   return (
     <form className="form-group" onSubmit={formik.handleSubmit}>
@@ -52,28 +43,23 @@ export const ProductForm = ({ product, onSubmit }: ProductFormProps) => {
           </div>
 
           <div className="col-md-12 ">
-            <label className="form-label ">Categoria</label>
-            <select
+            <AutoComplete
+              title="Categoria"
               id="categoryId"
-              className="form-select "
-              onChange={formik.handleChange}
-              value={formik.values.categoryId}
-            >
-              <option>Seleciona a categoria do produto...</option>
-              {!!category &&
-                category.map((category, index) => {
-                  return (
-                    <option key={index} value={category.id}>
-                      {category.name}
-                    </option>
-                  );
-                })}
-            </select>
+              loading={false}
+              placeholder="Selecione a categoria"
+              data={convertDataAutoComplete(category)}
+              onChange={(e) => {
+                e !== null ? formik.setFieldValue('categoryId', e.value) : formik.setFieldValue('categoryId', null);
+              }}
+              idValue={formik.values.categoryId}
+              error={formik.touched.categoryId && formik.errors.categoryId ? formik.errors.categoryId : ''}
+            />
           </div>
 
           <div className="col-md-12 ">
             <Input
-              autoFocus={true}
+              autoFocusValue={true}
               id="name"
               name="name"
               onChange={formik.handleChange}
@@ -85,9 +71,11 @@ export const ProductForm = ({ product, onSubmit }: ProductFormProps) => {
 
           <div className="col-md-12 ">
             <Input
-              autoFocus={true}
               id="quantMin"
               name="quantMin"
+              type="number"
+              min="0.00"
+              step="0.001"
               onChange={formik.handleChange}
               value={formik.values.quantMin}
               error={formik.touched.quantMin && formik.errors.quantMin ? formik.errors.quantMin : ''}

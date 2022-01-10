@@ -17,6 +17,7 @@ type props = {
   idValue?: number;
   onChange: (e: any) => void;
   onBlur?: (e: any) => void;
+  error?: string;
 };
 
 export const AutoComplete = ({
@@ -30,10 +31,11 @@ export const AutoComplete = ({
   idValue,
   onChange,
   onBlur,
+  error,
 }: props) => {
   const valueFunction = () => {
     let idSelect;
-    if (idValue) {
+    if (idValue >= 0) {
       idSelect = data.filter((i) => {
         return i.value === idValue;
       });
@@ -45,7 +47,7 @@ export const AutoComplete = ({
     <Styled.Wrapper>
       <span className="mb-5 ajustSpan">{title}</span>
       <Select
-        className="basic-single"
+        className={'basic-single' + (error ? 'is-invalid' : '')}
         classNamePrefix="select"
         isDisabled={disabled ? disabled : false}
         isLoading={loading ? loading : false}
@@ -55,9 +57,24 @@ export const AutoComplete = ({
         placeholder={placeholder}
         options={data}
         onChange={onChange}
-        value={valueFunction() || value}
+        value={valueFunction() || value || null}
         onBlur={onBlur}
+        noOptionsMessage={() => 'Nenhum dado encontrado.'}
+        styles={{
+          control: (base, state) => ({
+            ...base,
+            borderColor: error ? 'red' : base.borderColor,
+          }),
+
+          menuList: (base, state) => ({
+            ...base,
+            background: '#CBD5D7',
+          }),
+        }}
       />
+      <span style={{ fontSize: '14px' }} className="text-danger">
+        {error}
+      </span>
     </Styled.Wrapper>
   );
 };

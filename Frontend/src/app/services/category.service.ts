@@ -12,7 +12,6 @@ export const useCategoryService = () => {
 
   const update = async (category: Category): Promise<void> => {
     const url = `${resourceURL}/${category.id}`;
-    console.log(url);
     await httpClient.put<Category>(url, category);
   };
 

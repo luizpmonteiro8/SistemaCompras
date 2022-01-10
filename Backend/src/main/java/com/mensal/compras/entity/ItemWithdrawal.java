@@ -1,6 +1,7 @@
 package com.mensal.compras.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class ItemWithdrawal implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;	
-	private Double quantity;
+	private BigDecimal quantity;
 	
 	@JsonBackReference
 	@ManyToOne

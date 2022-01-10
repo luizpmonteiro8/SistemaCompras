@@ -13,7 +13,6 @@ export const useProductService = () => {
 
   const update = async (product: ProductDTO): Promise<void> => {
     const url = `${resourceURL}/${product.id}`;
-    console.log(url);
     await httpClient.put<Product>(url, product);
   };
 
@@ -36,6 +35,7 @@ export const useProductService = () => {
       name: response.data.name,
       blocked: response.data.blocked,
       categoryId: response.data.category.id,
+      quantMin: response.data.quantMin,
     };
     return productDto;
   };

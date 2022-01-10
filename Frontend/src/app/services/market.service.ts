@@ -12,7 +12,6 @@ export const useMarketService = () => {
 
   const update = async (market: Market): Promise<void> => {
     const url = `${resourceURL}/${market.id}`;
-    console.log(url);
     await httpClient.put<Market>(url, market);
   };
 

@@ -40,8 +40,8 @@ public class Purchases implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'BRT'", timezone = "America/Sao_Paulo")
-	private Date instantDate;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date date;
 
 	@Setter(value = AccessLevel.NONE)
 	@Getter(value = AccessLevel.NONE)
@@ -55,33 +55,33 @@ public class Purchases implements Serializable {
 	@JoinColumn(name = "market_id")
 	private Market market;
 
-	public Purchases(Long id, Date instantDate, PurchasesStatus status,
+	public Purchases(Long id, Date date, PurchasesStatus status,
 			List<ItemPurchases> itemPurchaseList, Market market) {
 		super();
 		this.id = id;
-		this.instantDate = instantDate;
+		this.date = date;
 		this.status = status.getId();
 		this.itemPurchaseList = itemPurchaseList;
 		this.market = market;
 	}
 	
 
-	public Double getTotal() {
-		
-		Double[] soma = new Double[1];
-		soma[0]=0.0;
-		itemPurchaseList.forEach((x) -> soma[0]+=(x.getPrice().multiply(BigDecimal.valueOf(x.getQuantity()))).doubleValue());
+	public BigDecimal getTotal() {		
+		BigDecimal[] soma = new BigDecimal[1];
+		soma[0]=BigDecimal.ZERO;
+		itemPurchaseList.forEach((x) -> soma[0] = soma[0].add(x.getSubTotal()));
 		return soma[0];
 	}
 
-	public PurchasesStatus getStatus() {
-		return PurchasesStatus.toEnum(status);
+	public String getStatus() {
+		return PurchasesStatus.toEnum(status).getDisplayName();
 	}
 
 	public void setStatus(PurchasesStatus status) {
 		this.status = status.getId();
 	}
 
+	//toEmail
 	@Override
 	public String toString() {
 		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
@@ -92,7 +92,7 @@ public class Purchases implements Serializable {
 		builder.append(", Mercado=");
 		builder.append(getMarket());
 		builder.append(", Data=");
-		builder.append(sdf.format(getInstantDate()));
+		builder.append(sdf.format(getDate()));
 		builder.append(", status=");
 		builder.append(PurchasesStatus.toEnum(status).getDisplayName());
 		builder.append(", items=");

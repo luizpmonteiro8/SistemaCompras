@@ -1,53 +1,24 @@
-import BootstrapTable from 'react-bootstrap-table-next';
-import { useCategoryService } from 'app/services/index';
-import { useState, useEffect } from 'react';
-import { Category } from 'app/models/category';
-import { Router, useRouter } from 'next/router';
-import { mensagemErro, mensagemSucesso } from 'components';
-import { Modal } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as Styled from './styles';
+import { useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import { Modal } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
+import { Category } from 'app/models/category';
+import { connect, ConnectedProps } from 'react-redux';
+import { LoadAllCategory, DeleteCategory } from 'store/actions/category';
 
-export const CategoryListing = () => {
-  const [category, setCategory] = useState<Category[]>();
-  const service = useCategoryService();
-  const router = useRouter();
-  const { id } = router.query;
+type Props = PropsFromRedux;
 
+const CategoryListing = (props: Props) => {
   const [categoryDelete, setCategoryDelete] = useState<Category>({ id: null, name: '' });
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    loading();
-  }, [id]);
-
-  const loading = () => {
-    service
-      .loadAllCategory()
-      .then((category) => {
-        setCategory(category);
-      })
-      .catch((e) => {
-        mensagemErro(e.response.data.message);
-        if (e.response.data.message === 'Access Denied') {
-          router.push('/');
-        }
-      });
-  };
-
-  const deleteCategory = (id) => {
-    service
-      .deleteCategory(id)
-      .then(() => {
-        mensagemSucesso('Deletado com sucesso!');
-        router.replace('/cadastros/categorias');
-      })
-      .catch((e) => {
-        mensagemErro(e.response.data.message);
-      });
-  };
+    props.loadAll();
+  }, []);
 
   const columns = [
     {
@@ -87,10 +58,10 @@ export const CategoryListing = () => {
 
   return (
     <Styled.Wrapper>
-      {!!category && (
+      {props.category.length >= 1 && (
         <BootstrapTable
           keyField="id"
-          data={category}
+          data={props.category}
           columns={columns}
           noDataIndication="Nenhum valor encontrado."
           bootstrap4
@@ -109,7 +80,7 @@ export const CategoryListing = () => {
           <Button
             variant="danger"
             onClick={() => {
-              deleteCategory(categoryDelete.id);
+              props.delete(categoryDelete.id);
               handleClose();
             }}
           >
@@ -123,3 +94,20 @@ export const CategoryListing = () => {
     </Styled.Wrapper>
   );
 };
+
+const mapStateToProps = ({ category }) => {
+  return {
+    category: category.category as Category[],
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadAll: () => dispatch(LoadAllCategory()),
+    delete: (id) => dispatch(DeleteCategory(id)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+export default connector(CategoryListing);

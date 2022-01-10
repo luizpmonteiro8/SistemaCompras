@@ -3,21 +3,21 @@ import { useEffect, useContext } from 'react';
 import { Footer } from 'components/footer';
 import * as Styled from './styles';
 import { ToastContainer } from 'react-toastify';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 
 export type BaseProps = {
   children?: React.ReactNode;
 };
 
 export const Base = ({ children }: BaseProps) => {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap.js');
   }, []);
   return (
     <Styled.Wrapper>
-      <Styled.MenuContainer>{!!session && <Menu />}</Styled.MenuContainer>
+      <Styled.MenuContainer>{status === 'authenticated' && <Menu />}</Styled.MenuContainer>
       <Styled.Container className="container-md p-0 row mx-auto  justify-content-center">
         <ToastContainer
           position="top-right"

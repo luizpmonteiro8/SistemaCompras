@@ -1,6 +1,6 @@
 import { ToastContainer, toast } from 'react-toastify';
 
-export function mensagemErro(mensagem) {
+export function messageError(mensagem) {
   toast.error(mensagem, {
     position: 'top-right',
     autoClose: 10000,
@@ -12,7 +12,7 @@ export function mensagemErro(mensagem) {
   });
 }
 
-export function mensagemSucesso(mensagem) {
+export function messageSucess(mensagem) {
   toast.success(mensagem, {
     position: 'top-right',
     autoClose: 5000,
@@ -24,7 +24,7 @@ export function mensagemSucesso(mensagem) {
   });
 }
 
-export function mensagemInfo(mensagem) {
+export function messageInfo(mensagem) {
   toast.info(mensagem, {
     position: 'top-right',
     autoClose: 10000,
@@ -36,7 +36,7 @@ export function mensagemInfo(mensagem) {
   });
 }
 
-export function mensagemAlert(mensagem) {
+export function messageAlert(mensagem) {
   toast.warn(mensagem, {
     position: 'top-right',
     autoClose: 10000,
@@ -48,7 +48,7 @@ export function mensagemAlert(mensagem) {
   });
 }
 
-export function mensagemPromise(mensagem) {
+export function messagePromise(mensagem) {
   toast.promise(mensagem, {
     position: 'top-right',
     autoClose: 10000,

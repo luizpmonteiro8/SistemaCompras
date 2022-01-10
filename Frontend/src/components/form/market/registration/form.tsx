@@ -2,11 +2,10 @@ import { useFormik } from 'formik';
 import { Input } from 'components/common/input';
 import { Market } from 'app/models/market';
 import { validationScheme } from './validationScheme';
-import { AutoComplete } from 'components/common/autoComplete';
 
 export type MarketFormProps = {
   market: Market;
-  onSubmit: (market: Market) => void;
+  onSubmit: (market: Market, { resetForm, setValues }) => void;
 };
 
 const formSchema = {
@@ -34,7 +33,7 @@ export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
           <div className="col-md-12 "></div>
           <div className="col-md-12 ">
             <Input
-              autoFocus={true}
+              autoFocusValue={true}
               id="name"
               name="name"
               onChange={formik.handleChange}
@@ -45,7 +44,6 @@ export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
           </div>
           <div className="col-md-12 ">
             <Input
-              autoFocus={true}
               id="cnpj"
               name="cnpj"
               onChange={formik.handleChange}
@@ -59,7 +57,10 @@ export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
               className="form-check-input"
               type="checkbox"
               id="blocked"
-              onChange={formik.handleChange}
+              onChange={(v) => {
+                const { checked } = v.target;
+                formik.setFieldValue('blocked', checked);
+              }}
               defaultChecked={formik.values.blocked ? true : false}
             />
             <label className="form-check-label" htmlFor="blocked">

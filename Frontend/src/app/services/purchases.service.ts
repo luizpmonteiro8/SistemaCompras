@@ -48,6 +48,7 @@ export const usePurchasesService = () => {
       marketId: response.data.market.id,
       status: response.data.status,
       itemPurchaseDTOList: itemList,
+      date: response.data.date,
     };
 
     return PurchasesDto;

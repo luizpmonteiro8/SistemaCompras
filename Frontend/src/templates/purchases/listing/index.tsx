@@ -1,4 +1,4 @@
-import { PurchasesListing } from 'components';
+import PurchasesListing from 'components/form/purchases/listing';
 import { Base } from '../../base';
 import * as Styled from './styles';
 

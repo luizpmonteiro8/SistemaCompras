@@ -17,8 +17,8 @@ public class ItemPurchasesDTO implements Serializable {
 	private static final long serialVersionUID = 1L;	
 
 	private Long id;
-	private Double quantity;
-	@JsonFormat(pattern = "dd/MM/yyyy")
+	private BigDecimal quantity;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date validaty;
 	private BigDecimal price;
 	private Long productId;

@@ -3,16 +3,17 @@ import { useProductService } from 'app/services/index';
 import { useState, useEffect } from 'react';
 import { Product } from 'app/models/product';
 import { Router, useRouter } from 'next/router';
-import { mensagemErro, mensagemSucesso } from 'components';
+import { messageError, messageSucess } from 'components';
 import { Modal } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import * as Styled from './styles';
+import { connect, ConnectedProps } from 'react-redux';
+import { LoadAllProduct, DeleteProduct } from 'store/actions/product';
 
-export const ProductListing = () => {
-  const [product, setProduct] = useState<Product[]>();
-  const service = useProductService();
+type Props = PropsFromRedux;
+
+const ProductListing = (props: Props) => {
   const router = useRouter();
-  const { id } = router.query;
 
   const [productDelete, setProductDelete] = useState<Product>({
     id: null,
@@ -26,34 +27,8 @@ export const ProductListing = () => {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    loading();
-  }, [id]);
-
-  const loading = () => {
-    service
-      .loadAllProduct()
-      .then((product) => {
-        setProduct(product);
-      })
-      .catch((e) => {
-        mensagemErro(e.response.data.message);
-        if (e.response.data.message === 'Access Denied') {
-          router.push('/');
-        }
-      });
-  };
-
-  const deleteProduct = (id) => {
-    service
-      .deleteProduct(id)
-      .then(() => {
-        mensagemSucesso('Deletado com sucesso!');
-        router.reload();
-      })
-      .catch((e) => {
-        mensagemErro(e.response.data.message);
-      });
-  };
+    props.loadAll();
+  }, []);
 
   const columns = [
     {
@@ -72,6 +47,7 @@ export const ProductListing = () => {
     {
       dataField: 'quantMin',
       text: 'Quantidade mínima',
+      formatter: (cellContent, row: Product) => <div>{row.quantMin?.toString().replace('.', ',')}</div>,
     },
     {
       dataField: 'blocked',
@@ -85,7 +61,7 @@ export const ProductListing = () => {
       csvExport: false,
       formatter: (cell, row: Product) => (
         <div>
-          <a href={`/cadastros/produtos?id=${row.id}`} className="btn btn-warning me-1">
+          <a onClick={() => router.replace(`/cadastros/produtos?id=${row.id}`)} className="btn btn-warning me-1">
             Alterar
           </a>
           <button
@@ -105,11 +81,11 @@ export const ProductListing = () => {
 
   return (
     <Styled.Wrapper>
-      {!!product && (
+      {props.product.length >= 1 && (
         <BootstrapTable
           wrapperClasses="table-responsive-md"
           keyField="id"
-          data={product}
+          data={props.product}
           columns={columns}
           noDataIndication="Nenhum valor encontrado."
           bootstrap4
@@ -128,7 +104,7 @@ export const ProductListing = () => {
           <Button
             variant="danger"
             onClick={() => {
-              deleteProduct(productDelete.id);
+              props.delete(productDelete.id);
               handleClose();
             }}
           >
@@ -142,3 +118,20 @@ export const ProductListing = () => {
     </Styled.Wrapper>
   );
 };
+
+const mapStateToProps = ({ product }) => {
+  return {
+    product: product.product as Product[],
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadAll: () => dispatch(LoadAllProduct()),
+    delete: (id) => dispatch(DeleteProduct(id)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+export default connector(ProductListing);

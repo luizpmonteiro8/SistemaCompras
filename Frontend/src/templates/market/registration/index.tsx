@@ -1,5 +1,5 @@
-import { MarketRegistration } from 'components';
-import { MarketListing } from 'components';
+import MarketRegistration from 'components/form/market/registration/index';
+import MarketListing from 'components/form/market/listing/index';
 import { Base } from '../../base';
 import * as Styled from './styles';
 

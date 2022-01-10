@@ -1,83 +1,44 @@
 import { useFormik } from 'formik';
 import { Input } from 'components/common/input';
-import { useCategoryService } from 'app/services/index';
 import { Category } from 'app/models/category';
-import { useEffect, useState } from 'react';
-import { mensagemErro } from 'components';
 import { itemPurchaseDTO } from 'app/models/purchasesDTO';
 import { AutoComplete, dataAutoComplete } from 'components/common/autoComplete';
 import { convertDataAutoComplete } from 'components/common/autoComplete/convertdata';
 import { validationScheme } from './validationScheme';
 import { Product } from 'app/models/product';
-import { Console } from 'console';
+import { useState } from 'react';
 
 export type ItemPurchasesFormProps = {
-  itemPurchases: itemPurchaseDTO;
   product: Product[];
-  onSubmit: (itemPurchases: itemPurchaseDTO) => void;
+  category: Category[];
+  filterProductByCategory: (idCategory: number) => Product[];
+  onSubmit: (itemPurchases: itemPurchaseDTO, { resetForm, setValues }) => void;
 };
 
-export const ItemPurchasesForm = ({ itemPurchases, product, onSubmit }: ItemPurchasesFormProps) => {
+export const ItemPurchasesForm = ({ product, category, filterProductByCategory, onSubmit }: ItemPurchasesFormProps) => {
   let loading: boolean;
 
   const formSchema = {
-    id: '',
-    quantity: '',
-    validaty: '',
-    price: '',
-    productId: '',
+    id: Number.parseInt(''),
+    quantity: Number.parseInt(''),
+    validaty: null,
+    price: Number.parseInt(''),
+    productId: null,
   };
 
-  const [category, setCategory] = useState<Category[]>();
-
-  const [dateValidaty, setDateValidaty] = useState<string>();
   const [categorySelected, setCategorySelected] = useState<dataAutoComplete>();
-  const [productSelected, setProductSelected] = useState<dataAutoComplete>();
-  const categoryService = useCategoryService();
 
   const formik = useFormik<itemPurchaseDTO>({
-    initialValues: { ...formSchema, ...itemPurchases },
+    initialValues: { ...formSchema },
     onSubmit,
     enableReinitialize: true,
     validationSchema: validationScheme,
   });
 
-  const CleanForm = () => {
-    formik.resetForm();
-    setCategorySelected(null);
-    setProductSelected(null);
-    setDateValidaty('dd/mm/aaaa');
-    formik.setFieldValue('id', '');
-    formik.setFieldValue('quantity', '');
-    formik.setFieldValue('price', '');
-    formik.setFieldValue('productId', '');
-  };
-
-  useEffect(() => {
-    categoryService
-      .loadAllCategory()
-      .then((category) => {
-        setCategory(category);
-      })
-      .catch((e) => {
-        mensagemErro(e);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (typeof itemPurchases !== 'undefined' && itemPurchases.id === 0.00553) {
-      CleanForm();
-    }
-  }, [itemPurchases]);
-
   return (
-    <form className="form-group" onSubmit={formik.handleSubmit}>
+    <form className="form-group" onSubmit={formik.handleSubmit} noValidate>
       <div>
         <div className="row m-2">
-          <div className="col-md-12 ">
-            {<Input disabled id="id" name="id" onChange={formik.handleChange} value={formik.values.id} label="Id" />}
-          </div>
-
           <div className="col-md-4 ">
             {!!category && (
               <AutoComplete
@@ -101,17 +62,19 @@ export const ItemPurchasesForm = ({ itemPurchases, product, onSubmit }: ItemPurc
                 id="productId"
                 loading={loading}
                 placeholder="Selecione um produto"
-                data={convertDataAutoComplete(product)}
+                data={convertDataAutoComplete(
+                  filterProductByCategory(categorySelected?.value).length >= 1
+                    ? filterProductByCategory(categorySelected?.value)
+                    : product,
+                )}
                 onChange={(e) => {
                   if (e !== null) {
                     formik.setFieldValue('productId', e.value);
                   } else {
                     formik.setFieldValue('productId', '');
                   }
-
-                  setProductSelected(e);
                 }}
-                value={productSelected}
+                idValue={formik.values.productId}
               />
             )}
           </div>
@@ -150,16 +113,11 @@ export const ItemPurchasesForm = ({ itemPurchases, product, onSubmit }: ItemPurc
             <Input
               id="validaty"
               name="validaty"
-              onChange={(e) => {
-                const date = new Date(e.target.value);
-                date.setHours(date.getHours() + 3);
-                setDateValidaty(date.toISOString().slice(0, 10));
-                formik.setFieldValue('validaty', date.toLocaleDateString('pt-BR'));
-              }}
+              onChange={formik.handleChange}
               label="Validade"
               type="date"
-              value={dateValidaty}
-              error={formik.errors.validaty}
+              value={formik.values.validaty ? String(formik.values.validaty) : null}
+              error={formik.touched.validaty && formik.errors.validaty ? String(formik.errors.validaty) : null}
             />
           </div>
           <div className="row justify-content-center mt-2">

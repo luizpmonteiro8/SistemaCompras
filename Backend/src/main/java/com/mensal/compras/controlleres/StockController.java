@@ -29,7 +29,8 @@ public class StockController {
 		return ResponseEntity.ok().body(list);
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN','READ_STOCK')")
+	
+	@PreAuthorize("hasAnyRole('ADMIN','WRITE_STOCK')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Stock> findById(@PathVariable Long id) {
 		Stock obj = service.findById(id);

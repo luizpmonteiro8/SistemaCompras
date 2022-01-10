@@ -7,7 +7,7 @@ export type FooterProps = {
 export const Footer = ({ title }: FooterProps) => {
   return (
     <Styled.Wrapper className="row align-items-center justify-content-center text-center border-top ">
-      <div className="col-sm-3">
+      <div className="col-md-1">
         <a href="/" className="d-flex align-items-center mb-3 link-dark text-decoration-none">
           <svg className="bi me-2" width="40" height="32">
             <use xlinkHref="#bootstrap"></use>
@@ -16,94 +16,22 @@ export const Footer = ({ title }: FooterProps) => {
         <p className="text-muted">© 2021</p>
       </div>
 
-      <div className="col-sm-3">
-        <h2>Section</h2>
+      <div className="col-md-11">
+        <h2>Criado por Luiz Pedro</h2>
         <ul className="nav flex-column">
           <li className="nav-item mb-2">
             <a href="#" className="nav-link p-0 text-muted">
-              Home
+              Linkiedn
             </a>
           </li>
           <li className="nav-item mb-2">
             <a href="#" className="nav-link p-0 text-muted">
-              Features
+              Email
             </a>
           </li>
           <li className="nav-item mb-2">
             <a href="#" className="nav-link p-0 text-muted">
-              Pricing
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              FAQs
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              About
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div className="col-sm-3">
-        <h2>Section</h2>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Home
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Features
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Pricing
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              FAQs
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              About
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div className="col-sm-3">
-        <h2>Section</h2>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Home
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Features
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Pricing
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              FAQs
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              About
+              Zap
             </a>
           </li>
         </ul>

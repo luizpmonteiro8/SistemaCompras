@@ -4,6 +4,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +41,8 @@ public class ResourceExceptionHandler {
 				HttpStatus.NOT_FOUND.value(), "Não encontrado", e.getMessage(),
 				request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
-	}
-
+	}	
+	
 	@ExceptionHandler(DataIntegrityException.class)
 	public ResponseEntity<StandardError> dataIntegrity(DataIntegrityException e,
 			HttpServletRequest request) {
@@ -51,7 +52,7 @@ public class ResourceExceptionHandler {
 				request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
 	}
-
+	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<StandardError> validation(MethodArgumentNotValidException e,
 			HttpServletRequest request) {
@@ -101,7 +102,7 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError> test(EmptyResultDataAccessException ex,
 			HttpServletRequest request) {
 		StandardError err = new StandardError(System.currentTimeMillis(),
-				HttpStatus.NOT_FOUND.value(), "Integridade de dados ", ex.getMessage(),
+				HttpStatus.NOT_FOUND.value(), "Integridade de dados", ex.getMessage(),
 				request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 
@@ -110,12 +111,21 @@ public class ResourceExceptionHandler {
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	public ResponseEntity<StandardError> test(SQLIntegrityConstraintViolationException ex,
 			HttpServletRequest request) {
+		String errorMessage = null;
+		if(ex.getMessage().contains("Duplicate")) {
+			errorMessage = "Duplicado";
+		}
+		if(ex.getMessage().contains("Cannot delete")) {
+			errorMessage = "Não foi possivel deletar, está em uso por outro cadastro";
+		}
 		StandardError err = new StandardError(System.currentTimeMillis(),
-				HttpStatus.BAD_REQUEST.value(), "Integridade de dados ", "Cadastro está em uso!",
+				HttpStatus.BAD_REQUEST.value(), "Integridade de dados",errorMessage ,
 				request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 
 	}
+	
+
 	
 	
 

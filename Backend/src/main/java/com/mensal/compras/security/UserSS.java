@@ -15,17 +15,19 @@ public class UserSS implements UserDetails {
 	
 	private Long id;
 	private String email;
-	private String senha;
+	private String password;
+	private String name;
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	public UserSS() {
 	}
 	
-	public UserSS(Long id, String email, String senha, Set<Permissions> permissions) {
+	public UserSS(Long id, String email, String password,String name, Set<Permissions> permissions) {
 		super();
 		this.id = id;
 		this.email = email;
-		this.senha = senha;
+		this.password = password;
+		this.name = name;
 		this.authorities = permissions.stream().map(x -> new SimpleGrantedAuthority(x.getDisplayName())).collect(Collectors.toList());
 	}
 
@@ -40,11 +42,15 @@ public class UserSS implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return senha;
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
+		return name;
+	}
+	
+	public String getEmail() {
 		return email;
 	}
 

@@ -1,5 +1,5 @@
-import { CategoryRegistration } from 'components';
-import { CategoryListing } from 'components';
+import CategoryRegistration from 'components/form/category/registration/index';
+import CategoryListing from 'components/form/category/listing/index';
 import { Base } from '../../base';
 import * as Styled from './styles';
 

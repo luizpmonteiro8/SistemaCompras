@@ -5,7 +5,8 @@ import { validationScheme } from './validationScheme';
 
 export type CategoryFormProps = {
   category: Category;
-  onSubmit: (category: Category) => void;
+  onSubmit: (category: Category, { resetForm, setValues }) => void;
+  isLoading: boolean;
 };
 
 const formSchema = {
@@ -13,7 +14,7 @@ const formSchema = {
   name: '',
 };
 
-export const CategoryForm = ({ category, onSubmit }: CategoryFormProps) => {
+export const CategoryForm = ({ category, onSubmit, isLoading }: CategoryFormProps) => {
   const formik = useFormik<Category>({
     initialValues: { ...formSchema, ...category },
     onSubmit,
@@ -26,12 +27,21 @@ export const CategoryForm = ({ category, onSubmit }: CategoryFormProps) => {
       <div>
         <div className="row m-2">
           <div className="col-md-12 ">
-            {<Input disabled id="id" name="id" onChange={formik.handleChange} value={formik.values.id} label="Id" />}
+            {
+              <Input
+                disabled={true}
+                id="id"
+                name="id"
+                onChange={formik.handleChange}
+                value={formik.values.id}
+                label="Id"
+              />
+            }
           </div>
 
           <div className="col-md-12 ">
             <Input
-              autoFocus={true}
+              autoFocusValue={true}
               id="name"
               name="name"
               onChange={formik.handleChange}
@@ -43,7 +53,7 @@ export const CategoryForm = ({ category, onSubmit }: CategoryFormProps) => {
 
           <div className="row justify-content-center mt-2">
             <div className="col-md-6  text-center ">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 Enviar
               </button>
               <a href={'/cadastros/categorias'} className="btn btn-danger ms-2">

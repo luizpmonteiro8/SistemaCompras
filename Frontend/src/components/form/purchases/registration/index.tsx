@@ -1,80 +1,76 @@
 import { PurchasesDTO, itemPurchaseDTO } from 'app/models/purchasesDTO';
-import { ItemPurchasesRegistration } from 'components';
-import { useState, useEffect } from 'react';
+import ItemPurchasesRegistration from '../itempurchases/registration/index';
+import { useEffect } from 'react';
 import { PurchasesForm } from './form';
 import * as Styled from './styles';
-import { usePurchasesService } from 'app/services/purchases.service';
 import { Cookies } from 'react-cookie';
-import { mensagemErro, mensagemSucesso } from 'components/common/toastr';
+import { messageError, messageSucess } from 'components/common/toastr';
 import { useRouter } from 'next/dist/client/router';
+import { SavePurchases, UpdatePurchases, LoadAllPurchasesDTO } from 'store/actions/purchases';
+import { LoadAllMarket } from 'store/actions/market';
+import { connect, ConnectedProps } from 'react-redux';
+import { Purchases } from 'app/models/purchases';
+import { Market } from 'app/models/market';
 
-export const PurchasesRegistration = () => {
-  const [purchasesDTO, setPurchasesDTO] = useState<PurchasesDTO>({
-    id: 0, //if 0 when submit create new purchases
-    marketId: null,
-    status: null,
-    itemPurchaseDTOList: undefined,
-  });
-  const purchasesService = usePurchasesService();
+type Props = PropsFromRedux;
+
+const PurchasesRegistration = (props: Props) => {
   const router = useRouter();
   const { id } = router.query;
   const cookie = new Cookies();
 
-  //loading purchases when have id in url
   useEffect(() => {
+    props.loadMarket();
     if (typeof id !== 'undefined') {
-      purchasesService
-        .loadPurchasesDTO(id)
-        .then((i) => {
-          setPurchasesDTO(i);
-          console.log();
-        })
-        .catch((e) => {
-          mensagemErro(e.message);
-        });
+      try {
+        props.loadPurchasesDTO(id);
+      } catch (err) {
+        messageError(err);
+      }
     }
   }, [id]);
 
-  const changeStatus = () => {
-    if (purchasesDTO.status === 'DELIVERED') {
+  const removeCookie = () => {
+    cookie.get('itemPurchases');
+    cookie.remove('itemPurchases', { path: '/' });
+  };
+
+  const changeStatus = (purchasesDTO) => {
+    if (purchasesDTO.status === 'Entregue') {
       purchasesDTO.status = '2';
     }
-    if (purchasesDTO.status === 'PENDING') {
+    if (purchasesDTO.status === 'Em rota') {
       purchasesDTO.status = '1';
     }
   };
 
-  const handleSubmit = (purchasesDTO: PurchasesDTO) => {
-    //new purchases
-    if (purchasesDTO.id === 0) {
-      purchasesDTO.itemPurchaseDTOList = cookie.get('itemPurchases');
-      if (purchasesDTO.itemPurchaseDTOList) {
-        purchasesService
-          .save(purchasesDTO)
-          .then(() => {
-            mensagemSucesso('Salvo com sucesso!');
-            cookie.remove('itemPurchases', { path: '/' });
-            router.push('/compras/lista?s=sucesso');
-          })
-          .catch((e) => {
-            mensagemErro(e.errors);
-            mensagemErro(e.message);
-          });
-      } else {
-        mensagemErro('Nenhum item adicionado.');
-      }
-    } else {
-      changeStatus();
-      purchasesService
-        .update(purchasesDTO)
-        .then(() => {
-          mensagemSucesso('Salvo com sucesso!');
+  const updateItemPurchasesFromPropsToLocalpurchasesDTO = (purchasesDTO: PurchasesDTO) => {
+    purchasesDTO.itemPurchaseDTOList = props.purchasesUpdate.itemPurchaseDTOList;
+    return purchasesDTO;
+  };
+
+  const handleSubmit = (purchasesDTO: PurchasesDTO, { resetForm, setValues }) => {
+    changeStatus(purchasesDTO);
+    try {
+      if (purchasesDTO.id > 0) {
+        const returnValue = props.updatePurchases(updateItemPurchasesFromPropsToLocalpurchasesDTO(purchasesDTO));
+        if (returnValue) {
           router.push('/compras/lista');
-        })
-        .catch((e) => {
-          mensagemErro(e.errors);
-          mensagemErro(e.message);
-        });
+          messageSucess('Alterado com sucesso!');
+        }
+      } else {
+        purchasesDTO.itemPurchaseDTOList = cookie.get('itemPurchases');
+        const returnValue = props.savePurchases(purchasesDTO);
+
+        if (returnValue) {
+          resetForm();
+          removeCookie();
+          router.push('/compras/lista');
+          messageSucess('Salvo com sucesso.');
+        }
+      }
+    } catch (err) {
+      messageError(err);
     }
   };
 
@@ -83,12 +79,40 @@ export const PurchasesRegistration = () => {
       <div className="card bg-light my-2 mx-auto col-md-8" style={{}}>
         <h4 className="card-header ">Compra</h4>
         <div className="card-body">
-          {typeof purchasesDTO !== 'undefined' && <PurchasesForm purchasesDTO={purchasesDTO} onSubmit={handleSubmit} />}
+          {typeof props.purchasesDTO !== 'undefined' && (
+            <PurchasesForm
+              purchasesDTO={props.purchasesDTO}
+              market={props.market}
+              removeCookie={removeCookie}
+              onSubmit={handleSubmit}
+            />
+          )}
         </div>
       </div>
-      {typeof purchasesDTO !== 'undefined' && (
-        <ItemPurchasesRegistration itemPurchasesLoad={purchasesDTO.itemPurchaseDTOList} />
-      )}
+      {typeof props.purchasesDTO !== 'undefined' && <ItemPurchasesRegistration purchases={props.purchasesDTO} />}
     </Styled.Wrapper>
   );
 };
+
+const mapStateToProps = ({ market, purchases }) => {
+  return {
+    market: market.market as Market[],
+    purchases: purchases.purchases as Purchases[],
+    purchasesDTO: purchases.purchasesDTOSelect as PurchasesDTO,
+    purchasesUpdate: purchases.purchasesUpdate as PurchasesDTO,
+    isLoading: purchases.isLoading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    savePurchases: (Purchases: PurchasesDTO) => dispatch(SavePurchases(Purchases)),
+    updatePurchases: (Purchases: PurchasesDTO) => dispatch(UpdatePurchases(Purchases)),
+    loadPurchasesDTO: (id) => dispatch(LoadAllPurchasesDTO(id)),
+    loadMarket: () => dispatch(LoadAllMarket()),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+export default connector(PurchasesRegistration);

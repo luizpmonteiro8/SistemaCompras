@@ -44,4 +44,20 @@ public enum PurchasesStatus {
 		
 		throw new IllegalArgumentException("Invalido id: " + id);
 	}
+	
+	public static PurchasesStatus toEnum(String displayName) {
+		
+		if(displayName==null) {
+			return null;
+		}
+		
+		for (PurchasesStatus x : PurchasesStatus.values()) {
+			if(displayName.equals(x.getDisplayName())) {
+				return x;
+			}
+			
+		}
+		
+		throw new IllegalArgumentException("Invalido displayName: " + displayName);
+	}
 }
