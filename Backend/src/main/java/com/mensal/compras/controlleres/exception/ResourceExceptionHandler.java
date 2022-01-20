@@ -114,6 +114,9 @@ public class ResourceExceptionHandler {
 		if(ex.getMessage().contains("Duplicate")) {
 			errorMessage = "Duplicado";
 		}
+		if(ex.getMessage().contains("Unique")) {
+			errorMessage = "Duplicado";
+		}
 		if(ex.getMessage().contains("Cannot delete")) {
 			errorMessage = "Não foi possivel deletar, está em uso por outro cadastro";
 		}
