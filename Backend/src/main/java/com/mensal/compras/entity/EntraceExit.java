@@ -29,6 +29,7 @@ public class EntraceExit implements Serializable {
 	private BigDecimal quantity;
 	//0 entrace 1 exit
 	private Integer type;
+	private boolean status;
 	
 	@ManyToOne
 	@JoinColumn(name="stock_id")

@@ -28,7 +28,4 @@ public class HeaderExposureFilter implements Filter {
 		chain.doFilter(request, response);
 	}
 
-	@Override
-	public void destroy() {
-	}
 }

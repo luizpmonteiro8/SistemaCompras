@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import { Credential } from 'app/models/user/index';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { messageError } from './../../../components/common/toastr/index';
 
 export default NextAuth({
   secret: process.env.NEXT_AUTH_SECRET,
@@ -25,24 +26,23 @@ export default NextAuth({
         }
         const credential: Credential = { email: credentials.email, password: credentials.password };
         const url = `${process.env.NEXT_PUBLIC_API_URL}/login`;
-        try {
-          const res = await fetch('http://localhost:8080/login', {
-            method: 'POST',
-            body: JSON.stringify(credential),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          const response: Response = await res;
-          const authorization = { id: response.headers.get('Authorization') };
-          console.log('autorization', authorization);
-          if (authorization) {
-            return authorization;
-          } else {
-            return null;
-          }
-        } catch (err) {
-          throw new Error('Não foi possivel conectar com servidor.');
+
+        const res = await fetch('http://localhost:8080/login', {
+          method: 'POST',
+          body: JSON.stringify(credential),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!res.ok) {
+          throw new Error('Email ou senha incorreta!');
+        }
+        const response: Response = res;
+        const authorization = { id: response.headers.get('Authorization') };
+        if (authorization) {
+          return authorization;
+        } else {
+          return null;
         }
       },
     }),

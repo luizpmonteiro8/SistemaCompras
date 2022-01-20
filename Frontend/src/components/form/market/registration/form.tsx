@@ -2,6 +2,7 @@ import { useFormik } from 'formik';
 import { Input } from 'components/common/input';
 import { Market } from 'app/models/market';
 import { validationScheme } from './validationScheme';
+import { useRouter } from 'next/dist/client/router';
 
 export type MarketFormProps = {
   market: Market;
@@ -16,6 +17,7 @@ const formSchema = {
 };
 
 export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
+  const route = useRouter();
   const formik = useFormik<Market>({
     initialValues: { ...formSchema, ...market },
     onSubmit,
@@ -46,6 +48,7 @@ export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
             <Input
               id="cnpj"
               name="cnpj"
+              type="number"
               onChange={formik.handleChange}
               value={formik.values.cnpj}
               error={formik.touched.cnpj && formik.errors.cnpj ? formik.errors.cnpj : ''}
@@ -73,8 +76,14 @@ export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
               <button type="submit" className="btn btn-primary">
                 Enviar
               </button>
-              <a href="/" className="btn btn-danger ms-2">
-                Cancelar
+              <a
+                onClick={() => {
+                  route.replace('/cadastros/mercados');
+                  formik.resetForm();
+                }}
+                className="btn btn-danger ms-2"
+              >
+                Limpar
               </a>
             </div>
           </div>

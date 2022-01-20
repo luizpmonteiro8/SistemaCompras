@@ -1,6 +1,5 @@
 package com.mensal.compras.services;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,9 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.mensal.compras.entity.Product;
 import com.mensal.compras.entity.Stock;
-import com.mensal.compras.repositories.ProductRepository;
 import com.mensal.compras.repositories.StockRepository;
 import com.mensal.compras.services.exception.ObjectNFException;
 
@@ -20,14 +17,12 @@ import com.mensal.compras.services.exception.ObjectNFException;
 public class StockService {
 	@Autowired
 	private StockRepository repo;
-	
-	@Autowired
-	private ProductRepository productRepo;
+
 
 	public Stock findById(Long id) {
 		Optional<Stock> obj = repo.findById(id);
 
-		return obj.orElseThrow(() -> new ObjectNFException("Loja não encontrado! Id: " + id));
+		return obj.orElseThrow(() -> new ObjectNFException("Estoque não encontrado! Id: " + id));
 	}
 
 	public List<Stock> findAll() {
@@ -40,30 +35,6 @@ public class StockService {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction),
 				orderBy);
 		return repo.findAll(pageRequest);
-	}
-	
-	public boolean addProduct(Long idProduct,BigDecimal quantity) {
-		Product product =  productRepo.findById(idProduct).get();
-		Stock stock = repo.findByProduct(product);
-		if(stock != null) {
-			stock.addStock(quantity);
-			return true;
-		}else {
-			return false;
-		}	
-		
-	}
-	
-	public boolean removeProduct(Long idProduct,BigDecimal quantity) {
-		Product product =  productRepo.findById(idProduct).get();
-		Stock stock = repo.findByProduct(product);
-		if(stock != null) {
-			stock.removeStock(quantity);
-			return true;
-		}else {
-			return false;
-		}	
-		
 	}
 	
 }

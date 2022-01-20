@@ -1,14 +1,12 @@
 import { useFormik } from 'formik';
 import { Input } from 'components/common/input';
-import { Product } from 'app/models/product';
 import { validationScheme } from './validationScheme';
-import { useCategoryService } from 'app/services/index';
 import { Category } from 'app/models/category';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { messageError } from 'components';
+import { useState } from 'react';
 import { ProductDTO } from 'app/models/productDTO';
 import { AutoComplete } from 'components/common/autoComplete';
 import { convertDataAutoComplete } from 'components/common/autoComplete/convertdata';
+import { useRouter } from 'next/dist/client/router';
 
 export type ProductFormProps = {
   product: ProductDTO;
@@ -25,8 +23,7 @@ const formSchema = {
 };
 
 export const ProductForm = ({ product, onSubmit, category }: ProductFormProps) => {
-  const [categoryValue, setCategoryValue] = useState<number>();
-
+  const route = useRouter();
   const formik = useFormik<ProductDTO>({
     initialValues: { ...formSchema, ...product },
     onSubmit,
@@ -101,8 +98,14 @@ export const ProductForm = ({ product, onSubmit, category }: ProductFormProps) =
               <button type="submit" className="btn btn-primary">
                 Enviar
               </button>
-              <a href="/" className="btn btn-danger ms-2">
-                Cancelar
+              <a
+                onClick={() => {
+                  route.replace('/cadastros/produtos');
+                  formik.resetForm();
+                }}
+                className="btn btn-danger ms-2"
+              >
+                Limpar
               </a>
             </div>
           </div>

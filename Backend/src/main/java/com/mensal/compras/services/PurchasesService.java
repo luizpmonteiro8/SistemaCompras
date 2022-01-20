@@ -52,9 +52,9 @@ public class PurchasesService {
 
 	@Autowired
 	private HttpServletRequest request;
-	
-	//@Autowired
-	//private EmailService emailService;
+
+	// @Autowired
+	// private EmailService emailService;
 
 	public Purchases findById(Long id) {
 		Optional<Purchases> obj = repo.findById(id);
@@ -73,96 +73,69 @@ public class PurchasesService {
 
 		List<Stock> stockList = new ArrayList<>();
 
-		try {
-			obj = repo.save(obj);
-			for (ItemPurchases item : obj.getItemPurchaseList()) {
-				item.setPurchase(obj);
-				item.getStock().addStock(item.getQuantity());
-				stockList.add(item.getStock());
-			}
-			itemRepo.saveAll(obj.getItemPurchaseList());
-			if(obj.getStatus().contains(PurchasesStatus.DELIVERED.getDisplayName())) {
-				stockRepo.saveAll(stockList);
-			}
-			
-		} 
-		catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Venda já cadastrada!");
-			}
-
+		obj = repo.save(obj);
+		for (ItemPurchases item : obj.getItemPurchaseList()) {
+			item.setPurchase(obj);
+			item.getStock().addStock(item.getQuantity());
+			stockList.add(item.getStock());
 		}
-		
-		//emailService.sendOrderConfirmationHtmlEmail(obj);
+		itemRepo.saveAll(obj.getItemPurchaseList());
+		if (obj.getStatus().contains(PurchasesStatus.DELIVERED.getDisplayName())) {
+			stockRepo.saveAll(stockList);
+		}
+
+		// emailService.sendOrderConfirmationHtmlEmail(obj);
 		return obj;
 	}
 
 	@Transactional
 	public Purchases update(Purchases obj) {
 		Purchases newObj = findById(obj.getId());
-		
-		try {
-			for (ItemPurchases item : newObj.getItemPurchaseList()) {
-				itemRepo.delete(item);
-			}
+
+		for (ItemPurchases item : newObj.getItemPurchaseList()) {
+			itemRepo.delete(item);
 		}
-		catch (Exception e) {
-			throw new DataIntegrityException("Erro ao alterar compra!");
-		}
-		
-		
+
 		newObj = updateData(newObj, obj);
 
 		List<Stock> stockList = new ArrayList<>();
 
-		try {
-			obj = repo.save(newObj);
-			for (ItemPurchases item : newObj.getItemPurchaseList()) {
-				item.setPurchase(obj);
-				item.getStock().addStock(item.getQuantity());
-				stockList.add(item.getStock());
-			}
-			//itemRepo.saveAll(newObj.getItemPurchaseList());
-			if(obj.getStatus().contains(PurchasesStatus.DELIVERED.getDisplayName())) {
-				stockRepo.saveAll(stockList);
-			}
-		} catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Venda já cadastrada!");
-			}
-
+		obj = repo.save(newObj);
+		for (ItemPurchases item : newObj.getItemPurchaseList()) {
+			item.setPurchase(obj);
+			item.getStock().addStock(item.getQuantity());
+			stockList.add(item.getStock());
 		}
+		// itemRepo.saveAll(newObj.getItemPurchaseList());
+		if (obj.getStatus().contains(PurchasesStatus.DELIVERED.getDisplayName())) {
+			stockRepo.saveAll(stockList);
+		}
+
 		return obj;
 	}
 
 	private Purchases updateData(Purchases newObj, Purchases obj) {
-		return Purchases.builder().id(obj.getId()).date(obj.getDate())
-				.itemPurchaseList(obj.getItemPurchaseList()).market(obj.getMarket())
-				.status(PurchasesStatus.toEnum(obj.getStatus()).getId()).build();
+		return Purchases.builder().id(obj.getId()).date(obj.getDate()).itemPurchaseList(obj.getItemPurchaseList())
+				.market(obj.getMarket()).status(PurchasesStatus.toEnum(obj.getStatus()).getId()).build();
 
 	}
 
-	@Transactional
 	public void delete(Long id) {
-		Purchases purchases = repo.findById(id).get();
+		Purchases purchases = findById(id);
 
 		try {
-			if(purchases.getStatus().contains("Em rota")) {
+			if (purchases.getStatus().contains(PurchasesStatus.PENDING.getDisplayName())) {
 				repo.deleteById(id);
-			}else {
-				throw new DataIntegrityException(
-						"Não é possível excluir a venda que já foi entregue!");
-			}			
+			} else {
+				throw new DataIntegrityException("Não é possível excluir a venda que já foi entregue!");
+			}
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException(
-					"Não é possível excluir a venda!");
+			throw new DataIntegrityException("Não é possível excluir a venda!");
 		}
 	}
 
-	public Page<Purchases> findPage(Integer page, Integer linesPerPage, String orderBy,
-			String direction) {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction),
-				orderBy);
+	public Page<Purchases> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
 	}
 
@@ -180,8 +153,8 @@ public class PurchasesService {
 			itemPurchasesList.add(itemPurchases);
 		}
 
-		return Purchases.builder().itemPurchaseList(itemPurchasesList).market(market)
-				.status(objDTO.getStatus()).date(objDTO.getDate()).build();
+		return Purchases.builder().itemPurchaseList(itemPurchasesList).market(market).status(objDTO.getStatus())
+				.date(objDTO.getDate()).build();
 	}
 
 	public Purchases fromDTOUpdate(PurchasesDTO objDTO) {
@@ -207,7 +180,7 @@ public class PurchasesService {
 			itemPurchasesList.add(itemPurchases);
 		}
 
-		return Purchases.builder().itemPurchaseList(itemPurchasesList).market(market)
-				.status(objDTO.getStatus()).date(date).build();
+		return Purchases.builder().itemPurchaseList(itemPurchasesList).market(market).status(objDTO.getStatus())
+				.date(date).build();
 	}
 }

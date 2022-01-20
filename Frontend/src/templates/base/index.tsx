@@ -4,16 +4,21 @@ import { Footer } from 'components/footer';
 import * as Styled from './styles';
 import { ToastContainer } from 'react-toastify';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 export type BaseProps = {
   children?: React.ReactNode;
 };
 
 export const Base = ({ children }: BaseProps) => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+  const route = useRouter();
 
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap.js');
+    if (status === 'unauthenticated') {
+      route.push('/');
+    }
   }, []);
   return (
     <Styled.Wrapper>

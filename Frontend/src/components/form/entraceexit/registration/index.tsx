@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Category } from 'app/models/category';
 import { Product } from 'app/models/product';
 import { EntraceExit } from 'app/models/entraceexit';
@@ -9,7 +10,6 @@ import { EntraceExitForm } from './form';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { SaveEntraceExit, UpdateEntraceExit } from 'store/actions/entraceexit';
-import { messageError, messageSucess } from 'components';
 
 type Props = PropsFromRedux;
 const EntraceExitRegistration = (props: Props) => {
@@ -20,27 +20,27 @@ const EntraceExitRegistration = (props: Props) => {
   useEffect(() => {
     props.loadAllCategory();
     props.loadAllProduct();
-  }, [id]);
+
+    if (id) {
+      props.entraceexit.map((item) => {
+        if (item.id === parseInt(id.toString())) {
+          setEntraceExit(item);
+        }
+      });
+    }
+  }, [id, props.entraceexit]);
 
   const handleSubmit = async (entraceExitNew: EntraceExit, { resetForm, setValues }) => {
-    try {
-      if (entraceExitNew.id > 0) {
-        const returnValue = await props.updateEntraceExit(entraceExitNew);
-        if (returnValue) {
-          resetForm();
-          setValues({ id: '', name: '' });
-          router.replace('/cadastros/entradasaida');
-          messageSucess('Alterado com sucesso.');
-        }
-      } else {
-        const returnValue = await props.saveEntraceExit(entraceExitNew);
-        if (returnValue) {
-          resetForm();
-          messageSucess('Salvo com sucesso.');
-        }
+    if (entraceExitNew.id > 0) {
+      if (await props.updateEntraceExit(entraceExitNew)) {
+        resetForm();
+        setValues({ id: '', productId: 0, quantity: 0, type: null });
+        router.replace('/cadastros/entradasaida');
       }
-    } catch (err) {
-      messageError(err.message);
+    } else {
+      if (await props.saveEntraceExit(entraceExitNew)) {
+        resetForm();
+      }
     }
   };
 
@@ -68,8 +68,9 @@ const EntraceExitRegistration = (props: Props) => {
   );
 };
 
-const mapStateToProps = ({ category, product }) => {
+const mapStateToProps = ({ category, product, entraceExit }) => {
   return {
+    entraceexit: entraceExit.entraceExit as EntraceExit[],
     category: category.category as Category[],
     product: product.product as Product[],
   };

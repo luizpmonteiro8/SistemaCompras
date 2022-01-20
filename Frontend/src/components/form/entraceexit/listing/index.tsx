@@ -9,6 +9,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { LoadAllEntraceExit, DeleteEntraceExit } from 'store/actions/entraceexit';
 import { LoadAllProduct } from 'store/actions/product';
 import { Product } from 'app/models/product';
+import { useRouter } from 'next/dist/client/router';
 
 type Props = PropsFromRedux;
 
@@ -17,6 +18,7 @@ const EntraceExitListing = (props: Props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const route = useRouter();
 
   useEffect(() => {
     props.loadAll();
@@ -49,6 +51,11 @@ const EntraceExitListing = (props: Props) => {
       formatter: (cell, row: EntraceExit) => <div>{row?.quantity.toString().replace('.', ',')}</div>,
     },
     {
+      dataField: 'status',
+      text: 'Status',
+      formatter: (cell, row: EntraceExit) => <div>{row?.status ? 'Ativado' : 'Desativado'}</div>,
+    },
+    {
       dataField: 'type',
       text: 'Tipo',
       formatter: (cell, row: EntraceExit) => <div>{row?.type === 0 ? 'Entrada' : 'Saida'}</div>,
@@ -60,19 +67,23 @@ const EntraceExitListing = (props: Props) => {
       csvExport: false,
       formatter: (cell, row: EntraceExit) => (
         <div>
-          <a href={`/cadastros/entradasaida?id=${row.id}`} className="btn btn-warning me-1">
-            Alterar
-          </a>
-          <button
-            type="button"
-            onClick={() => {
-              handleShow();
-              setEntraceExitDelete(row);
-            }}
-            className="btn btn-danger"
-          >
-            Deletar
-          </button>
+          {row.status && (
+            <>
+              <a onClick={() => route.replace(`/cadastros/entradasaida?id=${row.id}`)} className="btn btn-warning me-1">
+                Alterar
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  handleShow();
+                  setEntraceExitDelete(row);
+                }}
+                className="btn btn-danger"
+              >
+                Deletar
+              </button>
+            </>
+          )}
         </div>
       ),
     },

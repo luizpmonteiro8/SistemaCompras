@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as Styled from './styles';
 import { useEffect, useState } from 'react';
 import { ItemPurchasesForm } from './form';
@@ -10,8 +11,8 @@ import { connect, ConnectedProps } from 'react-redux';
 import { LoadAllProduct } from 'store/actions/product';
 import { Category } from 'app/models/category';
 import { Product } from 'app/models/product';
+import { getItemCookie, setItemCookie, deleteItemCookie } from 'cookies/index';
 import { addItemPurchasesUpdate } from 'store/actions/purchases';
-import { getItemCookie, setItemCookie, removeItemCookie, deleteItemCookie } from 'cookies/index';
 
 interface Props extends PropsFromRedux {
   purchases: PurchasesDTO;
@@ -19,34 +20,33 @@ interface Props extends PropsFromRedux {
 
 const ItemPurchasesRegistration = (props: Props) => {
   const router = useRouter();
-  const [renderItem, setRenderItem] = useState(getItemCookie);
+  const { id } = router.query;
+  const [renderItem, setRenderItem] = useState(getItemCookie());
 
   useEffect(() => {
-    try {
-      props.loadCategory();
-      props.loadProduct();
-      if (props.purchases.itemPurchaseDTOList.length >= 1) {
-        setRenderItem(props.purchases.itemPurchaseDTOList);
-      }
-    } catch (err) {
-      messageError('Erro no carregamento');
+    props.loadCategory();
+    props.loadProduct();
+    if (props.purchases.itemPurchaseDTOList?.length >= 1) {
+      setRenderItem(props.purchases.itemPurchaseDTOList); //send to list
     }
   }, [props.purchases]);
 
-  const handleSubmit = (itemPurchases: itemPurchaseDTO, { resetForm, setValues }) => {
+  const handleSubmit = (itemPurchases: itemPurchaseDTO, { resetForm }) => {
     try {
-      const itemCookie: itemPurchaseDTO[] = getItemCookie();
+      const itemListCookie: itemPurchaseDTO[] = getItemCookie();
       if (!id) {
-        itemPurchases.id = itemCookie?.length >= 1 ? itemCookie.slice(-1)[0].id + 1 : 1;
-        saveCookie(itemPurchases);
+        itemPurchases.id = itemListCookie?.length >= 1 ? itemListCookie.slice(-1)[0].id + 1 : 1;
+        setItemCookie(itemPurchases);
+        setRenderItem(getItemCookie());
         resetForm();
       } else {
-        const id = props.purchasesUpdate.itemPurchaseDTOList[props.purchasesUpdate.itemPurchaseDTOList.length - 1].id;
-        itemPurchases.id = id + 1;
-        props.addItemPurchases(itemPurchases);
-        console.log(props.purchasesUpdate);
+        const newArrayList: itemPurchaseDTO[] = renderItem;
+        itemPurchases.id = newArrayList[newArrayList.length - 1].id + 1;
+        newArrayList.push(itemPurchases);
+        setRenderItem([...newArrayList]);
+        props.addItemPurchases(newArrayList);
+        resetForm();
       }
-
       messageSucess('Item adicionado');
     } catch (e) {
       messageError('Erro ao adicionar item');
@@ -59,15 +59,17 @@ const ItemPurchasesRegistration = (props: Props) => {
     });
   };
 
-  const saveCookie = (itemPurchases) => {
-    setItemCookie(itemPurchases);
-    setRenderItem(getItemCookie());
-  };
-
   const deleteItem = (id) => {
     if (!props.purchases.id) {
       deleteItemCookie(id);
       setRenderItem(getItemCookie());
+    } else {
+      let newArrayList: itemPurchaseDTO[] = renderItem;
+      newArrayList = newArrayList.filter((item) => {
+        return item.id != id;
+      });
+      setRenderItem([...newArrayList]);
+      props.addItemPurchases(newArrayList);
     }
   };
 
@@ -93,7 +95,7 @@ const ItemPurchasesRegistration = (props: Props) => {
           item={renderItem}
           product={props.product}
           deleteItemCookie={deleteItem}
-          deleteActive={props.purchases.status ? props.purchases.status.includes('Entregue') : false}
+          deleteActive={!props.purchases?.status?.includes('Entregue')}
         />
       )}
     </Styled.Wrapper>
@@ -104,7 +106,7 @@ const mapStateToProps = ({ purchases, category, product }) => {
   return {
     category: category.category as Category[],
     product: product.product as Product[],
-    purchasesUpdate: purchases.purchasesUpdate as PurchasesDTO,
+    itemPurchases: purchases.itemPurchasesUpdate as itemPurchaseDTO[],
     isLoading: purchases.isLoading,
   };
 };
@@ -113,7 +115,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     loadCategory: () => dispatch(LoadAllCategory()),
     loadProduct: () => dispatch(LoadAllProduct()),
-    addItemPurchases: (item) => dispatch(addItemPurchasesUpdate(item)),
+    addItemPurchases: (itemPurchases) => dispatch(addItemPurchasesUpdate(itemPurchases)),
   };
 };
 

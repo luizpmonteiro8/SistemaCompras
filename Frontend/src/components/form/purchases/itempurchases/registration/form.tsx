@@ -19,10 +19,10 @@ export const ItemPurchasesForm = ({ product, category, filterProductByCategory, 
   let loading: boolean;
 
   const formSchema = {
-    id: Number.parseInt(''),
-    quantity: Number.parseInt(''),
+    id: 0,
+    quantity: 0,
     validaty: null,
-    price: Number.parseInt(''),
+    price: 0,
     productId: null,
   };
 
@@ -93,7 +93,7 @@ export const ItemPurchasesForm = ({ product, category, filterProductByCategory, 
               onChange={(e) => formik.setFieldValue('quantity', e.target.value)}
               label="Quantidade"
               type="number"
-              value={formik.values.quantity}
+              value={formik.values.quantity === 0 ? '' : formik.values.quantity}
               error={formik.touched.quantity && formik.errors.quantity ? formik.errors.quantity : ''}
             />
           </div>
@@ -101,10 +101,10 @@ export const ItemPurchasesForm = ({ product, category, filterProductByCategory, 
             <Input
               id="price"
               name="price"
-              onChange={(e) => formik.setFieldValue('price', Number(e.target.value))}
+              onChange={(e) => formik.setFieldValue('price', e.target.value)}
               label="Preço"
               type="number"
-              value={formik.values.price}
+              value={formik.values.price === 0 ? '' : formik.values.price}
               error={formik.touched.price && formik.errors.price ? formik.errors.price : ''}
             />
           </div>

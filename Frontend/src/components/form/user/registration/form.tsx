@@ -34,7 +34,7 @@ export const UserForm = ({ user, onSubmit }: UserFormProps) => {
         <div className="row m-2">
           <div className="col-md-12 ">
             <Input
-              autoFocus={true}
+              autoFocusValue={true}
               id="name"
               name="name"
               onChange={formik.handleChange}

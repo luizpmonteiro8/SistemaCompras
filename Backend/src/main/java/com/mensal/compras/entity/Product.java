@@ -3,6 +3,7 @@ package com.mensal.compras.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class Product implements Serializable {
 	private Category category;
 
 	@JsonBackReference
-	@OneToOne(mappedBy = "product")
+	@OneToOne(mappedBy = "product",cascade = CascadeType.ALL)
 	private Stock stock;
 
 }

@@ -10,6 +10,7 @@ import {
 } from './actionTypes';
 import storeConfig from 'store/storeConfig';
 import { Product } from 'app/models/product';
+import { messageError, messageSucess } from './../../components/common/toastr/index';
 
 let returnValue = false;
 
@@ -23,15 +24,12 @@ export const SaveProduct = (productDTO: ProductDTO) => {
         productDTO.id = Number.parseInt(res.location.split('/')[4]);
         const product = DTOFromProduct(productDTO);
         dispatch({ type: SAVE_PRODUCT, payload: product });
+        messageSucess('Salvo com sucesso');
         returnValue = true;
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        setError(err);
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -47,15 +45,12 @@ export const UpdateProduct = (productDTO: ProductDTO) => {
       .then(() => {
         const product = DTOFromProduct(productDTO);
         dispatch({ type: UPDATE_PRODUCT, payload: product });
+        messageSucess('Alterado com sucesso');
         returnValue = true;
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        setError(err);
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -74,11 +69,7 @@ export const DeleteProduct = (id) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        setError(err);
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -94,11 +85,7 @@ export const LoadAllProductDTO = (id) => {
       .then((res) => dispatch({ type: LOAD_PRODUCT_DTO, payload: res }))
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        setError(err);
       });
     dispatch(isLoading(false));
   };
@@ -115,11 +102,7 @@ export const LoadAllProduct = () => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        setError(err);
       });
     dispatch(isLoading(false));
   };
@@ -145,3 +128,11 @@ const DTOFromProduct = (productDTO: ProductDTO): Product => {
 
   return product;
 };
+
+function setError(err) {
+  if (String(err.message).includes('Network Error')) {
+    messageError('Não foi possivel conectar com servidor.');
+  } else {
+    messageError(err.response.data.message);
+  }
+}

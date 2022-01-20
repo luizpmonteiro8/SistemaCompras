@@ -1,5 +1,6 @@
 import { useStockService } from 'app/services';
 import { LOAD_ALL_STOCK, IS_LOADING_STOCK } from './actionTypes';
+import { messageError } from './../../components/common/toastr/index';
 
 export const LoadAllStock = () => {
   const stockService = useStockService();
@@ -10,11 +11,7 @@ export const LoadAllStock = () => {
       .then((res) => dispatch({ type: LOAD_ALL_STOCK, payload: res }))
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        setError(err);
       });
     dispatch(isLoading(false));
   };
@@ -23,3 +20,11 @@ export const LoadAllStock = () => {
 const isLoading = (value: boolean) => {
   return { type: IS_LOADING_STOCK, payload: value };
 };
+
+function setError(err) {
+  if (String(err.message).includes('Network Error')) {
+    messageError('Não foi possivel conectar com servidor.');
+  } else {
+    messageError(err.response.data.message);
+  }
+}

@@ -4,7 +4,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -107,7 +106,7 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 
 	}
-	
+	//ok
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	public ResponseEntity<StandardError> test(SQLIntegrityConstraintViolationException ex,
 			HttpServletRequest request) {

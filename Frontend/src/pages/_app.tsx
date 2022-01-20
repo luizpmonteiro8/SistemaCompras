@@ -13,14 +13,14 @@ import storeConfig from 'store/storeConfig';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <NextAuthProvider session={pageProps.session}>
-      <Provider store={storeConfig}>
-        <CookiesProvider>
+      <CookiesProvider>
+        <Provider store={storeConfig}>
           <ThemeProvider theme={theme}>
             <Component {...pageProps} />
             <GlobalStyles />
           </ThemeProvider>
-        </CookiesProvider>
-      </Provider>
+        </Provider>
+      </CookiesProvider>
     </NextAuthProvider>
   );
 }

@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { connect, ConnectedProps } from 'react-redux';
 import { LoadAllPurchases, DeletePurchases } from 'store/actions/purchases';
-import { useRouter } from 'next/dist/client/router';
 
 const formatMoney = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -18,7 +17,6 @@ const PurchasesListing = (props: Props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const router = useRouter();
 
   const columns = [
     {
@@ -66,16 +64,10 @@ const PurchasesListing = (props: Props) => {
       formatter: (cell, row: Purchases) => {
         return (
           <div className="col-md-12">
-            <a
-              className="btn btn-warning me-1 col-xl-6 btn-sm"
-              href={router.push({
-                pathname: `/compras/cadastro?id=${row.id}`,
-                query: { purchase: JSON.stringify(row) },
-              })}
-            >
+            <a className="btn btn-warning me-1 col-xl-6 btn-sm" href={`/compras/cadastro?id=${row.id}`}>
               {row.status === 'Entregue' ? 'Visualizar' : 'Alterar'}
             </a>
-            {row.status.includes('Em rota') && (
+            {String(row.status).includes('Em rota') && (
               <button
                 type="button"
                 onClick={() => {

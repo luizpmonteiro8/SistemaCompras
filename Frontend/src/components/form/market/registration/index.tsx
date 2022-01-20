@@ -4,8 +4,6 @@ import { MarketForm } from './form';
 import { useRouter } from 'next/dist/client/router';
 import { SaveMarket, UpdateMarket } from 'store/actions/market';
 import { connect, ConnectedProps } from 'react-redux';
-import { messageSucess } from 'components';
-import { messageError } from 'components/common/toastr';
 
 type Props = PropsFromRedux;
 
@@ -25,24 +23,17 @@ const MarketRegistration = (props: Props) => {
   }, [id, props.market]);
 
   const handleSubmit = async (marketItem: Market, { resetForm, setValues }) => {
-    try {
-      if (marketItem.id > 0) {
-        const returnValue = await props.updateMarket(marketItem);
-        if (returnValue) {
-          resetForm({});
-          setValues({ id: '', name: '', blocked: false, cnpj: '' });
-          router.replace('/cadastros/mercados');
-          messageSucess('Alterado com sucesso.');
-        }
-      } else {
-        const returnValue = await props.saveMarket(marketItem);
-        if (returnValue) {
-          resetForm({});
-          messageSucess('Salvo com sucesso.');
-        }
+    if (marketItem.id > 0) {
+      if (await props.updateMarket(marketItem)) {
+        resetForm({});
+        setValues({ id: '', name: '', blocked: false, cnpj: '' });
+        router.replace('/cadastros/mercados');
       }
-    } catch (err) {
-      messageError(err.message);
+    } else {
+      const returnValue = await props.saveMarket(marketItem);
+      if (returnValue) {
+        resetForm({});
+      }
     }
   };
 

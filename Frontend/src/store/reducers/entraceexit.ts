@@ -37,10 +37,11 @@ const reducer = (state = initialState, action) => {
     case DELETE_ENTRACEEXIT:
       return {
         ...state,
-        entraceExit: state.entraceExit.filter((item) => {
-          if (item.id !== action.payload) {
-            return item;
+        entraceExit: state.entraceExit.map((item) => {
+          if (item.id == action.payload) {
+            item.status = false;
           }
+          return item;
         }),
       };
     case IS_LOADING_ENTRACEEXIT:

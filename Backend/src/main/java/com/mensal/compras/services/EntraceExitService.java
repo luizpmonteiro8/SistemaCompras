@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
-import javax.transaction.TransactionalException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -36,7 +34,6 @@ public class EntraceExitService {
 
 	public EntraceExit findById(Long id) {
 		Optional<EntraceExit> obj = repo.findById(id);
-
 		return obj.orElseThrow(() -> new ObjectNFException("Entrada/Saida não encontrado! Id: " + id));
 	}
 
@@ -50,26 +47,11 @@ public class EntraceExitService {
 	public EntraceExit insert(EntraceExit obj) {
 		obj.setId(null);
 
-		if (obj.getType() == 0) {
-			obj.getStock().addStock(obj.getQuantity());
-		} else if (obj.getType() == 1) {
-			if(obj.getStock().getQuantity().compareTo(obj.getQuantity())>= 0) {
-				obj.getStock().removeStock(obj.getQuantity());				
-			}else {
-				throw new DataIntegrityException("Item insuficiente no estoque! Disponível:"
-			+obj.getStock().getQuantity().toString().replace(".", ","));
-			}
-			
-		}
+		obj = insertStock(obj);
 
-		try {
-			stockRepo.save(obj.getStock());
-			repo.save(obj);			
-		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException(e.getMessage());			
-		} catch (TransactionalException e) {
-			throw new DataIntegrityException(e.getMessage());
-		}
+		obj.setStatus(true);
+		stockRepo.save(obj.getStock());
+		repo.save(obj);
 		return obj;
 	}
 
@@ -78,65 +60,31 @@ public class EntraceExitService {
 	public EntraceExit update(EntraceExit obj) {
 		EntraceExit newObj = findById(obj.getId());
 
-		if (newObj.getType() == 0) {
-			newObj.getStock().removeStock(newObj.getQuantity());
-		} else if (newObj.getType() == 1) {
-			newObj.getStock().addStock(newObj.getQuantity());
-		}		
-
-		try {
-			stockRepo.save(newObj.getStock());
-		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Entrada/Saida já cadastrada!");
-		} catch (TransactionalException e) {
-			throw new DataIntegrityException(e.getMessage());
-		}
-		
-		newObj= obj;		
-
-		if (newObj.getType() == 0) {
-			newObj.getStock().addStock(newObj.getQuantity());
-		} else if (newObj.getType() == 1) {
-			newObj.getStock().removeStock(newObj.getQuantity());
+		if (newObj.isStatus() == false) {
+			throw new DataIntegrityException("Status desativado!");
 		}
 
-		try {
-			repo.save(newObj);
-			stockRepo.save(newObj.getStock());
-		} catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Entrada/Saida já cadastrada!");
-			}
+		newObj = removeStock(newObj);
+		stockRepo.save(newObj.getStock());
 
-		}
+		newObj = obj;
+
+		newObj = insert(newObj);
+		repo.save(newObj);
+		stockRepo.save(newObj.getStock());
+
 		return newObj;
 	}
-
-	
 
 	@Transactional
 	public void delete(Long id) {
 		EntraceExit obj = findById(id);
 
-		if (obj.getType() == 0) {
-			obj.getStock().removeStock(obj.getQuantity());
-		} else if (obj.getType() == 1) {
-			obj.getStock().addStock(obj.getQuantity());
-		}
+		obj = removeStock(obj);
+		obj.setStatus(false);
 
-		try {
-			stockRepo.save(obj.getStock());
-		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Entrada/Saida já cadastrada!");
-		} catch (TransactionalException e) {
-			throw new DataIntegrityException(e.getMessage());
-		}
-
-		try {
-			repo.deleteById(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir uma entrada/saida que possui compras!");
-		}
+		stockRepo.save(obj.getStock());
+		repo.save(obj);
 	}
 
 	public Page<EntraceExit> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
@@ -151,4 +99,29 @@ public class EntraceExitService {
 		return EntraceExit.builder().id(objDTO.getId()).stock(stock).quantity(objDTO.getQuantity())
 				.type(objDTO.getType()).build();
 	}
+
+	private EntraceExit insertStock(EntraceExit obj) {
+		if (obj.getType() == 0) {
+			obj.getStock().addStock(obj.getQuantity());
+		} else if (obj.getType() == 1) {
+			if (obj.getStock().getQuantity().compareTo(obj.getQuantity()) >= 0) {
+				obj.getStock().removeStock(obj.getQuantity());
+			} else {
+				throw new DataIntegrityException("Item insuficiente no estoque! Disponível:"
+						+ obj.getStock().getQuantity().toString().replace(".", ","));
+			}
+
+		}
+		return obj;
+	}
+
+	private EntraceExit removeStock(EntraceExit newObj) {
+		if (newObj.getType() == 0) {
+			newObj.getStock().removeStock(newObj.getQuantity());
+		} else if (newObj.getType() == 1) {
+			newObj.getStock().addStock(newObj.getQuantity());
+		}
+		return newObj;
+	}
+
 }

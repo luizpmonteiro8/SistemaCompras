@@ -2,7 +2,7 @@ import Axios, { AxiosInstance } from 'axios';
 import { getSession } from 'next-auth/react';
 
 export const httpClient: AxiosInstance = Axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://192.168.1.10:8080',
   withCredentials: false,
 });
 

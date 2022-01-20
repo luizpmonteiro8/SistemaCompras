@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { formatReal } from 'app/util/money';
 import { useState } from 'react';
+import * as Styled from './styles';
+import { formatReal } from 'app/util/money/index';
 
-interface InputProps extends React.HTMLProps<typeof Input> {
+interface InputProps extends React.LinkHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
   columnClasses?: string;
@@ -14,6 +14,9 @@ interface InputProps extends React.HTMLProps<typeof Input> {
   disabled?: boolean;
   name: string;
   value: string | number;
+  type?: string;
+  min?: string;
+  step?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -26,6 +29,7 @@ export const Input: React.FC<InputProps> = ({
   disabled,
   name,
   value,
+  type,
   ...inputProps
 }: InputProps) => {
   const onInputChange = (event) => {
@@ -58,6 +62,7 @@ export const Input: React.FC<InputProps> = ({
           disabled={disabled}
           name={name}
           value={value}
+          type={type}
           ref={
             autoFocusValue && firstLoading
               ? function (input) {
@@ -68,7 +73,6 @@ export const Input: React.FC<InputProps> = ({
                 }
               : undefined
           }
-          di
           {...inputProps}
         />
         <div className="invalid-feedback">{error}</div>
@@ -79,4 +83,25 @@ export const Input: React.FC<InputProps> = ({
 
 export const InputMoney: React.FC<InputProps> = (props: InputProps) => {
   return <Input {...props} formatter={formatReal} />;
+};
+
+export const InputPassword: React.FC<InputProps> = ({ id, name, label, onChange, value, error }: InputProps) => {
+  const [visibled, setVisibled] = useState(false);
+  return (
+    <Styled.Wrapper>
+      <label>{label}</label>
+      <div className="pass-wrapper">
+        <input
+          className={'form-control ' + (error ? 'is-invalid' : '')}
+          id={id}
+          name={name}
+          type={visibled ? 'text' : 'password'}
+          onChange={onChange}
+          value={value}
+        />
+        {!error && <i className={visibled ? 'bi-eye-slash' : 'bi-eye'} onClick={() => setVisibled(!visibled)}></i>}
+      </div>
+      <div className="invalid-feedback">{error}</div>
+    </Styled.Wrapper>
+  );
 };

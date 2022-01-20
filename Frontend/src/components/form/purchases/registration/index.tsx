@@ -1,9 +1,8 @@
-import { PurchasesDTO, itemPurchaseDTO } from 'app/models/purchasesDTO';
+import { itemPurchaseDTO, PurchasesDTO } from 'app/models/purchasesDTO';
 import ItemPurchasesRegistration from '../itempurchases/registration/index';
 import { useEffect } from 'react';
 import { PurchasesForm } from './form';
 import * as Styled from './styles';
-import { Cookies } from 'react-cookie';
 import { messageError, messageSucess } from 'components/common/toastr';
 import { useRouter } from 'next/dist/client/router';
 import { SavePurchases, UpdatePurchases, LoadAllPurchasesDTO } from 'store/actions/purchases';
@@ -11,13 +10,13 @@ import { LoadAllMarket } from 'store/actions/market';
 import { connect, ConnectedProps } from 'react-redux';
 import { Purchases } from 'app/models/purchases';
 import { Market } from 'app/models/market';
+import { getItemCookie, removeItemCookie } from 'cookies/index';
 
 type Props = PropsFromRedux;
 
 const PurchasesRegistration = (props: Props) => {
   const router = useRouter();
   const { id } = router.query;
-  const cookie = new Cookies();
 
   useEffect(() => {
     props.loadMarket();
@@ -30,11 +29,6 @@ const PurchasesRegistration = (props: Props) => {
     }
   }, [id]);
 
-  const removeCookie = () => {
-    cookie.get('itemPurchases');
-    cookie.remove('itemPurchases', { path: '/' });
-  };
-
   const changeStatus = (purchasesDTO) => {
     if (purchasesDTO.status === 'Entregue') {
       purchasesDTO.status = '2';
@@ -44,27 +38,23 @@ const PurchasesRegistration = (props: Props) => {
     }
   };
 
-  const updateItemPurchasesFromPropsToLocalpurchasesDTO = (purchasesDTO: PurchasesDTO) => {
-    purchasesDTO.itemPurchaseDTOList = props.purchasesUpdate.itemPurchaseDTOList;
-    return purchasesDTO;
-  };
-
   const handleSubmit = (purchasesDTO: PurchasesDTO, { resetForm, setValues }) => {
     changeStatus(purchasesDTO);
     try {
       if (purchasesDTO.id > 0) {
-        const returnValue = props.updatePurchases(updateItemPurchasesFromPropsToLocalpurchasesDTO(purchasesDTO));
-        if (returnValue) {
+        if (props.purchasesUpdate.length >= 1) {
+          purchasesDTO.itemPurchaseDTOList = props.purchasesUpdate;
+        }
+
+        if (props.updatePurchases(purchasesDTO)) {
           router.push('/compras/lista');
           messageSucess('Alterado com sucesso!');
         }
       } else {
-        purchasesDTO.itemPurchaseDTOList = cookie.get('itemPurchases');
-        const returnValue = props.savePurchases(purchasesDTO);
-
-        if (returnValue) {
+        purchasesDTO.itemPurchaseDTOList = getItemCookie();
+        if (props.savePurchases(purchasesDTO)) {
           resetForm();
-          removeCookie();
+          removeItemCookie();
           router.push('/compras/lista');
           messageSucess('Salvo com sucesso.');
         }
@@ -83,7 +73,7 @@ const PurchasesRegistration = (props: Props) => {
             <PurchasesForm
               purchasesDTO={props.purchasesDTO}
               market={props.market}
-              removeCookie={removeCookie}
+              removeCookie={removeItemCookie}
               onSubmit={handleSubmit}
             />
           )}
@@ -99,7 +89,7 @@ const mapStateToProps = ({ market, purchases }) => {
     market: market.market as Market[],
     purchases: purchases.purchases as Purchases[],
     purchasesDTO: purchases.purchasesDTOSelect as PurchasesDTO,
-    purchasesUpdate: purchases.purchasesUpdate as PurchasesDTO,
+    purchasesUpdate: purchases.itemPurchasesUpdate as itemPurchaseDTO[],
     isLoading: purchases.isLoading,
   };
 };

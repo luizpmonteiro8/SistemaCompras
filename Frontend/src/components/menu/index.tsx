@@ -1,6 +1,7 @@
 import * as Styled from './styles';
 import { useRouter } from 'next/dist/client/router';
 import { signOut } from 'next-auth/react';
+import { usePurchasesService } from 'app/services';
 
 export type MenuProps = {
   title?: string;
@@ -8,6 +9,7 @@ export type MenuProps = {
 
 export const Menu = ({ title }: MenuProps) => {
   const router = useRouter();
+  const service = usePurchasesService();
   const logout = () => {
     signOut({ redirect: false });
     router.push('/');
@@ -19,7 +21,7 @@ export const Menu = ({ title }: MenuProps) => {
         <div className="col-md-12">
           <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
             <div className="col-md-3 ms-1">
-              <a className="navbar-brand" href="/">
+              <a className="navbar-brand text-color" href="/home">
                 Controle de compras
               </a>
             </div>
@@ -37,9 +39,9 @@ export const Menu = ({ title }: MenuProps) => {
               </button>
               <div className="collapse navbar-collapse" id="navbarColor01">
                 <ul className="navbar-nav me-auto">
-                  <li className="nav-item dropdown">
+                  <li className="nav-item dropdown ">
                     <a
-                      className="nav-link dropdown-toggle h5"
+                      className="dropdown-toggle text-color"
                       data-bs-toggle="dropdown"
                       href="#"
                       role="button"
@@ -69,7 +71,7 @@ export const Menu = ({ title }: MenuProps) => {
                   </li>
                   <li className="nav-item dropdown">
                     <a
-                      className="nav-link dropdown-toggle h5"
+                      className="dropdown-toggle text-color"
                       data-bs-toggle="dropdown"
                       href="#"
                       role="button"
@@ -84,9 +86,9 @@ export const Menu = ({ title }: MenuProps) => {
                       </a>
                     </div>
                   </li>
-                  <li className="nav-item dropdown">
+                  <li className="nav-item dropdown ">
                     <a
-                      className="nav-link dropdown-toggle h5"
+                      className="dropdown-toggle text-color"
                       data-bs-toggle="dropdown"
                       href="#"
                       role="button"
@@ -102,16 +104,29 @@ export const Menu = ({ title }: MenuProps) => {
                       <a className="dropdown-item" href="/compras/lista">
                         Compras
                       </a>
+                      <div className="dropdown-divider"></div>
+                      <a
+                        className="dropdown-item"
+                        onClick={() => {
+                          service.loadReportPurchases().then((blob) => {
+                            const fileURL = URL.createObjectURL(blob);
+                            window.open(fileURL);
+                          });
+                        }}
+                      >
+                        Compras(pdf)
+                      </a>
                     </div>
+                  </li>
+                  <li className="nav-item dropdown ">
+                    <button type="button" className="btn btn-light" onClick={() => logout()}>
+                      <text>Sair</text>
+                    </button>
                   </li>
                 </ul>
               </div>
             </div>
-            <div className="col-md-3">
-              <a className="button btn-link .text-light" onClick={() => logout()}>
-                Sair
-              </a>
-            </div>
+            <div className="col-md-3"></div>
           </nav>
         </div>
       </div>

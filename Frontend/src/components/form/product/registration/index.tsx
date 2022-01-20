@@ -1,9 +1,9 @@
-import { useState, useEffect, useContext } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import { Product } from 'app/models/product';
 import { useProductService } from 'app/services';
 import { ProductForm } from './form';
 import { useRouter } from 'next/dist/client/router';
-import { messageError, messageSucess } from 'components';
 import { ProductDTO } from 'app/models/productDTO';
 import { SaveProduct, UpdateProduct } from 'store/actions/product';
 import { LoadAllCategory } from 'store/actions/category';
@@ -26,24 +26,16 @@ const ProductRegistration = (props: Props) => {
   }, [id]);
 
   const handleSubmit = async (product: ProductDTO, { resetForm, setValues }) => {
-    try {
-      if (product.id > 0) {
-        const returnValue = await props.updateProduct(product);
-        if (returnValue) {
-          resetForm();
-          setValues({ id: '', name: '', blocked: '', quantMin: '', categoryId: null });
-          router.replace('/cadastros/produtos');
-          messageSucess('Alterado com sucesso.');
-        }
-      } else {
-        const returnValue = await props.saveProduct(product);
-        if (returnValue) {
-          resetForm();
-          messageSucess('Salvo com sucesso.');
-        }
+    if (product.id > 0) {
+      if (await props.updateProduct(product)) {
+        resetForm();
+        setValues({ id: '', name: '', blocked: '', quantMin: '', categoryId: null });
+        router.replace('/cadastros/produtos');
       }
-    } catch (err) {
-      messageError(err.message);
+    } else {
+      if (await props.saveProduct(product)) {
+        resetForm();
+      }
     }
   };
 

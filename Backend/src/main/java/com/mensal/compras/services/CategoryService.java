@@ -3,8 +3,6 @@ package com.mensal.compras.services;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -27,7 +25,6 @@ public class CategoryService {
 
 	public Category findById(Long id) {
 		Optional<Category> obj = repo.findById(id);
-
 		return obj.orElseThrow(() -> new ObjectNFException("Categoria não encontrado! Id: " + id));
 	}
 
@@ -36,57 +33,31 @@ public class CategoryService {
 		return list;
 	}
 
-	@Transactional
-	public Category insert(Category obj) {		
+	public Category insert(Category obj) {
 		obj.setId(null);
-
-		try {
-			repo.save(obj);	
-
-		} catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Categoria já cadastrada!");
-			}
-
-		}
-		return obj;
+		return repo.save(obj);
 	}
 
-	@Transactional
 	public Category update(Category obj) {
 		newObj = findById(obj.getId());
-		updateData(newObj, obj);		
-		try {
-			repo.save(newObj);		
-		}catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Categoria já cadastrada!");
-			}
-
-		}
-		return obj;
+		updateData(newObj, obj);
+		return repo.save(newObj);
 	}
 
 	private void updateData(Category newObj, Category obj) {
-		newObj.setName(obj.getName());			
-
+		newObj.setName(obj.getName());
 	}
 
-	@Transactional
-	public void delete(Long id)  {		
-		try {			
-			repo.deleteById(id);		
+	public void delete(Long id) {
+		try {
+			repo.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException(
-					"Não é possível deletar categoria com produtos cadastrado!");
+			throw new DataIntegrityException("Não é possível deletar categoria com produtos cadastrado!");
 		}
-		
 	}
 
-	public Page<Category> findPage(Integer page, Integer linesPerPage, String orderBy,
-			String direction) {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction),
-				orderBy);
+	public Page<Category> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
 	}
 

@@ -73,11 +73,14 @@ export const usePurchasesService = () => {
     return response.data;
   };
 
-  const reportPurchases = async (): Promise<Purchases[]> => {
+  const loadReportPurchases = async (): Promise<Blob> => {
     const url = `${resourceURL}/report`;
-    const response: AxiosResponse<Purchases[]> = await httpClient.get(url);
-    return response.data;
+    const response: AxiosResponse<Blob> = await httpClient.get(url, { responseType: 'blob' });
+    const bytes = response.data;
+    return new Blob([bytes], { type: 'application/pdf' });
   };
+  
+  
 
   return {
     save,
@@ -86,5 +89,6 @@ export const usePurchasesService = () => {
     deletePurchases,
     loadAllPurchases,
     loadPurchasesDTO,
+	loadReportPurchases,
   };
 };

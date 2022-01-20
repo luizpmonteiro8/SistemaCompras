@@ -24,7 +24,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/main/provedorAutenticacarrrrrrrro.tsx", "src/main/provedorAutenticacarrrrrrrro.tsx", "src/components/common/toastr/index.js"  ],
+, "src/main/provedorAutenticacarrrrrrrro.tsx", "src/main/provedorAutenticacarrrrrrrro.tsx", "src/components/common/toastr/index.js", "src/components/form/login/signin/styles.js", "src/components/form/category/registration/form.test.js", "src/components/form/category/registration/index.test.jsx"  ],
   "exclude": [
     "node_modules"
   ]

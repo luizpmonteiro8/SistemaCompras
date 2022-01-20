@@ -7,6 +7,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import { Category } from 'app/models/category';
 import { connect, ConnectedProps } from 'react-redux';
 import { LoadAllCategory, DeleteCategory } from 'store/actions/category';
+import { useRouter } from 'next/router';
 
 type Props = PropsFromRedux;
 
@@ -15,6 +16,7 @@ const CategoryListing = (props: Props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const route = useRouter();
 
   useEffect(() => {
     props.loadAll();
@@ -38,7 +40,7 @@ const CategoryListing = (props: Props) => {
       csvExport: false,
       formatter: (cell, row: Category) => (
         <div>
-          <a href={`/cadastros/categorias?id=${row.id}`} className="btn btn-warning me-1">
+          <a onClick={() => route.replace(`/cadastros/categorias?id=${row.id}`)} className="btn btn-warning me-1">
             Alterar
           </a>
           <button

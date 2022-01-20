@@ -47,11 +47,6 @@ public class Stock implements Serializable {
 	@Setter(value = AccessLevel.NONE)
 	@JsonBackReference
 	@OneToMany(mappedBy="stock")
-	private List<ItemWithdrawal> withdrawalsList;
-	
-	@Setter(value = AccessLevel.NONE)
-	@JsonBackReference
-	@OneToMany(mappedBy="stock")
 	private List<ItemPurchases> itemPurchasesList;
 	
 	public void addStock(BigDecimal quantity) {

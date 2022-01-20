@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useEffect } from 'react';
 import { Stock } from 'app/models/stock';
 import * as Styled from './styles';
 import { connect, ConnectedProps } from 'react-redux';
 import { LoadAllStock } from 'store/actions/stock';
+import { EntraceExit } from 'app/models/entraceexit';
 
 type Props = PropsFromRedux;
 

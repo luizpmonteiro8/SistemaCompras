@@ -3,8 +3,6 @@ package com.mensal.compras.services;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -53,33 +51,17 @@ public class UserService {
 		return list;
 	}
 
-	@Transactional
+
 	public User insert(User obj) {
 		obj.setId(null);
-		try {
-			repo.save(obj);
-		} catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Usuário já cadastrada!");
-			}
-
-		}
-		return obj;
+		return repo.save(obj);
 	}
 
-	@Transactional
+
 	public User update(User obj) {
 		User newObj = findById(obj.getId());
-		updateData(newObj, obj);
-		try {
-			repo.save(obj);
-		} catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Usuário já cadastrada!");
-			}
-
-		}
-		return obj;
+		updateData(newObj, obj);	
+		return repo.save(obj);
 	}
 
 	private void updateData(User newObj, User obj) {
@@ -91,7 +73,6 @@ public class UserService {
 
 	}
 
-	@Transactional
 	public void delete(Long id) {
 		try {
 			repo.deleteById(id);

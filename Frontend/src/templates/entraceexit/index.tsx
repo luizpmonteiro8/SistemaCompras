@@ -1,5 +1,5 @@
 import { Base } from '../base';
-import * as Styled from './styles';
+import * as Styled from '../entraceexit/styles';
 import EntraceExitRegistration from 'components/form/entraceexit/registration';
 import EntraceExitListing from 'components/form/entraceexit/listing';
 

@@ -38,7 +38,6 @@ public class ProductService {
 
 	public Product findById(Long id) {
 		Optional<Product> obj = repo.findById(id);
-
 		return obj.orElseThrow(() -> new ObjectNFException("Produto não encontrado! Id: " + id));
 	}
 
@@ -52,17 +51,10 @@ public class ProductService {
 		Stock stock = Stock.builder().product(obj).quantity(BigDecimal.ZERO).build();
 		obj.setId(null);
 
-		try {
-			repo.save(obj);
-			stockRepo.save(stock);
+		repo.save(obj);
+		stockRepo.save(stock);
 
-		} catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Produto já cadastrada!");
-			}
-
-		}
-		return obj;
+	return obj;
 	}
 
 	@Transactional
@@ -71,20 +63,15 @@ public class ProductService {
 		updateData(newObj, obj);
 		Stock newStock = stockRepo.findByProduct(obj);
 		newStock.setProduct(obj);
-
-		try {
-			repo.save(newObj);
-			stockRepo.save(newStock);
-		} catch (DataIntegrityViolationException e) {
-			if (e.getMostSpecificCause().getMessage().contains("Unique")) {
-				throw new DataIntegrityException("Produto já cadastrada!");
-			}
-
-		}
+		
+		repo.save(newObj);
+		stockRepo.save(newStock);
+		
 		return obj;
 	}
 
 	private void updateData(Product newObj, Product obj) {
+		newObj.setId(obj.getId());
 		newObj.setName(obj.getName());
 		newObj.setStock(obj.getStock());
 		newObj.setBlocked(obj.isBlocked());
@@ -93,14 +80,13 @@ public class ProductService {
 
 	}
 
-	@Transactional
 	public void delete(Long id) {
 		Stock stock = stockRepo.findByProduct(findById(id));
 		try {
 			repo.deleteById(id);
 			stockRepo.delete(stock);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir uma produto que possui compras!");
+			throw new DataIntegrityException("Não é possível excluir um produto que possui compras!");
 		}
 	}
 

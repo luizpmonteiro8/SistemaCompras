@@ -80,7 +80,7 @@ public class PurchasesController {
 	public ResponseEntity<Page<Purchases>> findPage(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
-			@RequestParam(value = "orderBy", defaultValue = "unit") String orderBy,
+			@RequestParam(value = "orderBy", defaultValue = "id") String orderBy,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
 		Page<Purchases> list = service.findPage(page, linesPerPage, orderBy, direction);		
 		return ResponseEntity.ok().body(list);

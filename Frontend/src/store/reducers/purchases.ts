@@ -8,12 +8,12 @@ import {
   ADD_ITEM_PURCHASES_UPDATE,
 } from '../actions/actionTypes';
 import { Purchases } from 'app/models/purchases';
-import { PurchasesDTO } from 'app/models/purchasesDTO';
+import { PurchasesDTO, itemPurchaseDTO } from 'app/models/purchasesDTO';
 
 const initialState = {
   purchases: [] as Purchases[],
   purchasesDTOSelect: {} as PurchasesDTO,
-  purchasesUpdate: {} as PurchasesDTO,
+  itemPurchasesUpdate: [] as itemPurchaseDTO[],
   isLoading: false,
 };
 
@@ -28,7 +28,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         purchasesDTOSelect: action.payload,
-        purchasesUpdate: action.payload,
       };
     case SAVE_PURCHASES:
       return {
@@ -38,7 +37,7 @@ const reducer = (state = initialState, action) => {
     case ADD_ITEM_PURCHASES_UPDATE:
       return {
         ...state,
-        purchasesUpdate: state.purchasesUpdate.itemPurchaseDTOList.concat(action.payload),
+        itemPurchasesUpdate: action.payload as itemPurchaseDTO[],
       };
     case UPDATE_PURCHASES:
       return {

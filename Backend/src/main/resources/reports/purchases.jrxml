@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchases" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bf5743d4-cf87-4d1d-9276-d26215c210fa">
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.tables">
+		<![CDATA[cHVyY2hhc2VzIEFTICwxNSwxNSxkMTEwMTFlMC1hNjc4LTQwMjgtODljZS05M2NjMDhhYjE3MTA7
+aXRlbV9wdXJjaGFzZXMgQVMgLDEzMywxNSwwNTRmNTZmZS0xMjViLTRmYTQtYTQ2Mi0yOWUzNjAy
+MmJmYmQ7cHJvZHVjdCBBUyAsMzc4LDE1LDc0Y2ZjOTNkLTQ2ZjctNGZhYS1iN2UxLWY1OWVkMTE5
+NzYwODtzdG9jayBBUyAsMjgzLDE1LGM0NDdkZjQ2LWIxN2EtNDNiNC1iNzI1LWJlZjZiZjVlZDE1
+Nzs=]]>
+	</property>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="compras"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT * from purchases as p INNER JOIN item_purchases as ip on ip.purchase_id = p.id INNER JOIN stock as st on ip.stock_id=st.id INNER JOIN product as pd on st.product_id=pd.id]]>
@@ -11,9 +17,14 @@
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="purchases"/>
 	</field>
-	<field name="instant_date" class="java.sql.Timestamp">
-		<property name="com.jaspersoft.studio.field.name" value="instant_date"/>
-		<property name="com.jaspersoft.studio.field.label" value="instant_date"/>
+	<field name="date" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="date"/>
+		<property name="com.jaspersoft.studio.field.label" value="date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="purchases"/>
+	</field>
+	<field name="status" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="purchases"/>
 	</field>
 	<field name="price" class="java.math.BigDecimal">
@@ -21,7 +32,7 @@
 		<property name="com.jaspersoft.studio.field.label" value="price"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="item_purchases"/>
 	</field>
-	<field name="quantity" class="java.lang.Double">
+	<field name="quantity" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.name" value="quantity"/>
 		<property name="com.jaspersoft.studio.field.label" value="quantity"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="item_purchases"/>
@@ -35,7 +46,7 @@
 		<variableExpression><![CDATA[$F{id}]]></variableExpression>
 	</variable>
 	<variable name="total" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{quantity}*$F{price}.doubleValue()]]></variableExpression>
+		<variableExpression><![CDATA[$F{quantity}.multiply($F{price} )]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<background>
@@ -220,7 +231,7 @@
 				<textElement>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{instant_date}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤#,##0.00;¤-#,##0.00">
 				<reportElement x="390" y="0" width="100" height="20" uuid="7c9ab85b-008b-4161-b3be-06acc9fa4859">
@@ -280,7 +291,7 @@
 				<textElement textAlignment="Right">
 					<paragraph rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new Double($F{quantity}*$F{price}.doubleValue())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{quantity}.multiply( $F{price} )]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -307,9 +318,13 @@
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<textField>
-				<reportElement x="460" y="0" width="100" height="30" uuid="7e24abd1-9637-4ad2-b383-09b24aae6575"/>
+				<reportElement x="460" y="0" width="50" height="30" uuid="d6cf1273-e264-4daf-847b-04cbcf37d26e"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="510" y="0" width="50" height="30" uuid="d83f0555-013a-4388-8644-07f83e21900b"/>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

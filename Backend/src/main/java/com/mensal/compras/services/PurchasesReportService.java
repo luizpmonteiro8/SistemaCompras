@@ -24,7 +24,7 @@ public class PurchasesReportService {
 	private Resource relatorioVendasSource;
 	
 	@Value("classpath:reports/purchases.jasper")
-	private Resource relatorioVendasCompilado;
+	private Resource reportCompiled;
 
 	@Autowired
 	private DataSource dataSource;
@@ -36,7 +36,7 @@ public class PurchasesReportService {
 			// parametros.put("ID_CLIENTE", idCliente); parametros.put("DATA_INICIO",
 						// dataInicio); parametros.put("DATA_FIM", dataFim);
 			return JasperRunManager.runReportToPdf(
-					relatorioVendasCompilado.getInputStream(), 
+					reportCompiled.getInputStream(), 
 					parametros, 
 					connection);
 

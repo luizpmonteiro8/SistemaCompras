@@ -2,6 +2,7 @@ import { useFormik } from 'formik';
 import { Input } from 'components/common/input';
 import { Category } from 'app/models/category';
 import { validationScheme } from './validationScheme';
+import { useRouter } from 'next/dist/client/router';
 
 export type CategoryFormProps = {
   category: Category;
@@ -15,6 +16,7 @@ const formSchema = {
 };
 
 export const CategoryForm = ({ category, onSubmit, isLoading }: CategoryFormProps) => {
+  const router = useRouter();
   const formik = useFormik<Category>({
     initialValues: { ...formSchema, ...category },
     onSubmit,
@@ -56,7 +58,13 @@ export const CategoryForm = ({ category, onSubmit, isLoading }: CategoryFormProp
               <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 Enviar
               </button>
-              <a href={'/cadastros/categorias'} className="btn btn-danger ms-2">
+              <a
+                onClick={() => {
+                  router.replace('/cadastros/categorias');
+                  formik.resetForm();
+                }}
+                className="btn btn-danger ms-2"
+              >
                 Limpar
               </a>
             </div>

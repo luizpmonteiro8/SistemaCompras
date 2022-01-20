@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useState, useEffect } from 'react';
 import { Market } from 'app/models/market';
@@ -6,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import * as Styled from './styles';
 import { connect, ConnectedProps } from 'react-redux';
 import { LoadAllMarket, DeleteMarket } from 'store/actions/market';
+import { useRouter } from 'next/dist/client/router';
 
 type Props = PropsFromRedux;
 
@@ -14,6 +16,7 @@ const MarketListing = (props: Props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const route = useRouter();
 
   useEffect(() => {
     props.loadAll();
@@ -47,7 +50,7 @@ const MarketListing = (props: Props) => {
       csvExport: false,
       formatter: (cell, row: Market) => (
         <div>
-          <a href={`/cadastros/mercados?id=${row.id}`} className="btn btn-warning me-1">
+          <a onClick={() => route.replace(`/cadastros/mercados?id=${row.id}`)} className="btn btn-warning me-1">
             Alterar
           </a>
           <button

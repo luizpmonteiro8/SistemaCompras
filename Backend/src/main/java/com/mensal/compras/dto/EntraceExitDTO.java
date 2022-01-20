@@ -26,12 +26,14 @@ public class EntraceExitDTO implements Serializable {
 	@NotNull(message="Preenchimento obrigatório")
 	private BigDecimal quantity;
 	private Integer type;
+	private boolean status;
 	
 	public EntraceExitDTO(EntraceExit obj) {
 		this.id = obj.getId();
 		this.productId = obj.getStock().getProduct().getId();
 		this.quantity = obj.getQuantity();	
 		this.type = obj.getType();
+		this.status = obj.isStatus();
 		
 	}
 

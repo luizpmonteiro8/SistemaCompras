@@ -6,6 +6,8 @@ import { Product } from 'app/models/product';
 import { Category } from 'app/models/category';
 import { convertDataAutoComplete } from 'components/common/autoComplete/convertdata';
 import { useState } from 'react';
+import { validationScheme } from './validationScheme';
+import { useRouter } from 'next/dist/client/router';
 
 export type EntraceExitFormProps = {
   category: Category[];
@@ -24,13 +26,18 @@ export const EntraceExitForm = ({
 }: EntraceExitFormProps) => {
   const formSchema = {
     id: '',
+    productId: 0,
+    quantity: 0,
+    type: null,
+    status: true,
   };
 
   const [categorySelected, setCategorySelected] = useState<dataAutoComplete>();
-
+  const route = useRouter();
   const formik = useFormik<EntraceExit>({
     initialValues: { ...formSchema, ...entraceExit },
     onSubmit,
+    validationSchema: validationScheme,
     enableReinitialize: true,
   });
 
@@ -44,7 +51,7 @@ export const EntraceExitForm = ({
               id="id"
               name="id"
               onChange={formik.handleChange}
-              value={formik.values.id}
+              value={formik.values.id == 0 ? '' : formik.values.id}
               label="Id"
               error={formik.errors.id}
             />
@@ -80,6 +87,7 @@ export const EntraceExitForm = ({
                 }
               }}
               idValue={formik.values.productId}
+              error={formik.touched.productId && formik.errors.productId ? formik.errors.productId : ''}
             />
           </div>
 
@@ -108,6 +116,7 @@ export const EntraceExitForm = ({
               ]}
               onChange={(e: dataAutoComplete) => formik.setFieldValue('type', e.value)}
               idValue={formik.values.type}
+              error={formik.touched.type && formik.errors.type ? formik.errors.type : ''}
             />
           </div>
 
@@ -116,8 +125,15 @@ export const EntraceExitForm = ({
               <button type="submit" className="btn btn-primary">
                 Enviar
               </button>
-              <a href="/" className="btn btn-danger ms-2">
-                Cancelar
+              <a
+                onClick={() => {
+                  route.replace('/cadastros/entradasaida');
+                  formik.resetForm();
+                  formik.setValues({ id: 0, productId: 0, quantity: 0, type: null, status: true });
+                }}
+                className="btn btn-danger ms-2"
+              >
+                Limpar
               </a>
             </div>
           </div>

@@ -7,7 +7,7 @@ import { messageError, messageSucess } from 'components';
 
 export const UserRegistration = () => {
   const service = useUserService();
-  const [user, setUser] = useState<User>({ id: '', name: '', email: '', password: '' });
+  const [user, setUser] = useState<User>({ id: 0, name: '', email: '', password: '' });
   const router = useRouter();
   const { id } = router.query;
 
@@ -16,10 +16,6 @@ export const UserRegistration = () => {
       service.loadUser(id).then((userFind) => setUser(userFind));
     }
   }, [id]);
-
-  /*   const handleSubmit = (user: User) => {
-    console.log(user);
-  }; */
 
   const handleSubmit = (user: User) => {
     service

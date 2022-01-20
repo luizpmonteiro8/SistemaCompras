@@ -31,7 +31,6 @@ export const ItemPurchaseDTOListing = ({ item, product, deleteItemCookie, delete
       text: 'ID',
       footer: () => '',
     },
-
     {
       dataField: 'productId',
       text: 'Produto',
@@ -72,8 +71,9 @@ export const ItemPurchaseDTOListing = ({ item, product, deleteItemCookie, delete
       dataField: 'total',
       text: 'Total',
       formatter: (cellContent, row: itemPurchaseDTO) => <div>{formatMoney.format(row.price * row.quantity)}</div>,
-      classes: (cell, row: itemPurchaseDTO, rowIndex, colIndex) => {
+      classes: (cell, row: itemPurchaseDTO) => {
         total += row.price * row.quantity;
+        return '';
       },
       footer: () => formatMoney.format(total),
     },
@@ -81,7 +81,7 @@ export const ItemPurchaseDTOListing = ({ item, product, deleteItemCookie, delete
       dataField: '',
       text: 'Excluir',
       isDummyField: true,
-      hidden: deleteActive,
+      hidden: !deleteActive,
       formatter: (cell, row: itemPurchaseDTO, rowIndex, colIndex) => (
         <button
           type="button"
@@ -99,7 +99,7 @@ export const ItemPurchaseDTOListing = ({ item, product, deleteItemCookie, delete
 
   return (
     <Styled.Wrapper>
-      {item && product.length >= 1 && !!deleteActive && (
+      {!!item && product.length >= 1 && (
         <>
           <h4 className="h4">
             Quantidade: <b>{item.length}</b>
