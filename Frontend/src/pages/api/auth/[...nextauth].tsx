@@ -27,7 +27,7 @@ export default NextAuth({
         const credential: Credential = { email: credentials.email, password: credentials.password };
         const url = `${process.env.NEXT_PUBLIC_API_URL}/login`;
 
-        const res = await fetch('http://localhost:8080/login', {
+        const res = await fetch('https://appcomprasluiz.herokuapp.com/login', {
           method: 'POST',
           body: JSON.stringify(credential),
           headers: {

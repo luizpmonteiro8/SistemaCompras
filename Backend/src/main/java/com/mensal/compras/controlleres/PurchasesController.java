@@ -30,14 +30,14 @@ public class PurchasesController {
 
 	@Autowired
 	private PurchasesService service;
-	
+
 	@Autowired
 	private PurchasesReportService reportService;
 
 	@PreAuthorize("hasAnyRole('ADMIN','READ_PURCHASES')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Purchases>> findAll() {
-		List<Purchases> list = service.findAll();		
+		List<Purchases> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 
@@ -53,15 +53,13 @@ public class PurchasesController {
 	public ResponseEntity<Purchases> insert(@Valid @RequestBody PurchasesDTO objDto) {
 		Purchases obj = service.fromDTO(objDto);
 		obj = service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(obj.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','WRITE_PURCHASES')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Purchases> update(@Valid @RequestBody PurchasesDTO objDto,
-			@PathVariable Long id) {
+	public ResponseEntity<Purchases> update(@Valid @RequestBody PurchasesDTO objDto, @PathVariable Long id) {
 		Purchases obj = service.fromDTOUpdate(objDto);
 		obj.setId(id);
 		obj = service.update(obj);
@@ -77,23 +75,22 @@ public class PurchasesController {
 
 	@PreAuthorize("hasAnyRole('ADMIN','READ_PURCHASES')")
 	@RequestMapping(value = "/page", method = RequestMethod.GET)
-	public ResponseEntity<Page<Purchases>> findPage(
-			@RequestParam(value = "page", defaultValue = "0") Integer page,
+	public ResponseEntity<Page<Purchases>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
 			@RequestParam(value = "orderBy", defaultValue = "id") String orderBy,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
-		Page<Purchases> list = service.findPage(page, linesPerPage, orderBy, direction);		
+		Page<Purchases> list = service.findPage(page, linesPerPage, orderBy, direction);
 		return ResponseEntity.ok().body(list);
 	}
-	
+
 	@RequestMapping(value = "/report", method = RequestMethod.GET)
-	public ResponseEntity<byte[]>  report() {
-		var relatorioGerado = reportService.gerarRelatorio(0L, null, null);
-		var headers = new HttpHeaders();
-		var fileName = "relatorio-vendas.pdf";
-		headers.setContentDispositionFormData("inline; filename=\"" +fileName+ "\"", fileName);
+	public ResponseEntity<byte[]> report() {
+		byte[] relatorioGerado = reportService.gerarRelatorio(0L, null, null);
+		HttpHeaders headers = new HttpHeaders();
+		String fileName = "relatorio-vendas.pdf";
+		headers.setContentDispositionFormData("inline; filename=\"" + fileName + "\"", fileName);
 		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-		var responseEntity = new ResponseEntity<>(relatorioGerado, headers, HttpStatus.OK);
+		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(relatorioGerado, headers, HttpStatus.OK);
 		return responseEntity;
 	}
 }

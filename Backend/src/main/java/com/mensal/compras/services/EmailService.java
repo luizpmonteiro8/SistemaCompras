@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import com.mensal.compras.entity.Purchases;
 import com.mensal.compras.entity.User;
 
+
 public interface EmailService {
 
 	void sendOrderConfirmationEmail(Purchases obj);

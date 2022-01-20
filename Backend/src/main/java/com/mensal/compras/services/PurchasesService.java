@@ -33,7 +33,10 @@ import com.mensal.compras.repositories.StockRepository;
 import com.mensal.compras.services.exception.DataIntegrityException;
 import com.mensal.compras.services.exception.ObjectNFException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PurchasesService {
 	@Autowired
 	private PurchasesRepository repo;
@@ -53,8 +56,7 @@ public class PurchasesService {
 	@Autowired
 	private HttpServletRequest request;
 
-	// @Autowired
-	// private EmailService emailService;
+	private final EmailService emailService;
 
 	public Purchases findById(Long id) {
 		Optional<Purchases> obj = repo.findById(id);
@@ -84,7 +86,7 @@ public class PurchasesService {
 			stockRepo.saveAll(stockList);
 		}
 
-		// emailService.sendOrderConfirmationHtmlEmail(obj);
+		emailService.sendOrderConfirmationHtmlEmail(obj);
 		return obj;
 	}
 

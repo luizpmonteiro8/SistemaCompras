@@ -29,7 +29,6 @@ describe('<AutoComplete />', () => {
 
     const nameInput = wrapper.find("input[name='name']").prop('value');
     expect(nameInput).toBe('Cereais');
-    expect(wrapper).toMatchSnapshot();
   });
 
   it('should change input name to Test', async () => {

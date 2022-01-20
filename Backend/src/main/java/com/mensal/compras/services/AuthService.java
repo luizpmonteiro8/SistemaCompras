@@ -10,17 +10,19 @@ import com.mensal.compras.entity.User;
 import com.mensal.compras.repositories.UserRepository;
 import com.mensal.compras.services.exception.ObjectNFException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
 	@Autowired
 	private UserRepository userRepository;
 	
 	@Autowired
-	private BCryptPasswordEncoder pe;
+	private BCryptPasswordEncoder pe;	
 	
-	@Autowired
-	private EmailService emailService;
+	private final EmailService emailService;
 	
 	private Random rand = new Random();
 	
