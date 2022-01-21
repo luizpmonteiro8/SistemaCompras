@@ -23,6 +23,7 @@ export const UserRegistration = () => {
       .then((userSalvo) => {
         setUser(userSalvo);
         messageSucess('Salvo com sucesso!');
+        router.push('/');
       })
       .catch((e) => {
         messageError(e.response.data.message);

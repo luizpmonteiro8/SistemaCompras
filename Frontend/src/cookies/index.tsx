@@ -40,5 +40,5 @@ export function getItemCookie() {
 
 export function removeItemCookie() {
   const cookies = new Cookies();
-  return cookies.remove('itemPurchases');
+  return cookies.remove('itemPurchases', { path: '/' });
 }

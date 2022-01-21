@@ -12,6 +12,7 @@ export type ProductFormProps = {
   product: ProductDTO;
   onSubmit: (product: ProductDTO, { resetForm, setValues }) => void;
   category: Category[];
+  isLoading: boolean;
 };
 
 const formSchema = {
@@ -22,7 +23,7 @@ const formSchema = {
   categoryId: null,
 };
 
-export const ProductForm = ({ product, onSubmit, category }: ProductFormProps) => {
+export const ProductForm = ({ product, onSubmit, category, isLoading }: ProductFormProps) => {
   const route = useRouter();
   const formik = useFormik<ProductDTO>({
     initialValues: { ...formSchema, ...product },
@@ -95,7 +96,7 @@ export const ProductForm = ({ product, onSubmit, category }: ProductFormProps) =
 
           <div className="row justify-content-center mt-2">
             <div className="col-md-6  text-center ">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 Enviar
               </button>
               <a

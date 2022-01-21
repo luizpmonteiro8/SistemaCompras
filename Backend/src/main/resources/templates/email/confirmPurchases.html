@@ -10,14 +10,14 @@
 Pedido número: <span th:text="${purchases.id}"> </span>
 </h1>
 <p>
-Instante: <span
-th:text="${#dates.format(purchases.instantDate, 'dd/MM/yyyy hh:mm')}"></span>
+Data: <span
+th:text="${#dates.format(purchases.date, 'dd/MM/yyyy hh:mm')}"></span>
 </p>
 <p>
 Situação do pedido: <span
 ></span>
 </p>
-<h3>Detalhes do purchases:</h3>
+<h3>Detalhes do pedido:</h3>
 <table border="1">
 <tr>
 <th>Produto</th>

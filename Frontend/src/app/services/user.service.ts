@@ -1,14 +1,15 @@
 import { httpClient } from '../http';
 import { Credential } from '../models/user';
 import { User } from '../models/user';
-import { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { messageError } from 'components';
 
 const resourceURL = '/users';
 
 export const useUserService = () => {
   const save = async (user: User): Promise<User> => {
-    const response: AxiosResponse<User> = await httpClient.post<User>(resourceURL, user);
+    const url = process.env.BASEURL + resourceURL;
+    const response: AxiosResponse<User> = await axios.post<User>(url, user);
     return response.data;
   };
 

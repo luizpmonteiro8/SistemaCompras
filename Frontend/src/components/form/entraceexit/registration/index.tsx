@@ -61,6 +61,7 @@ const EntraceExitRegistration = (props: Props) => {
             filterProductByCategory={filterProductByCategory}
             entraceExit={entraceExit}
             onSubmit={handleSubmit}
+            isLoading={props.isLoading}
           />
         </div>
       </div>
@@ -73,6 +74,7 @@ const mapStateToProps = ({ category, product, entraceExit }) => {
     entraceexit: entraceExit.entraceExit as EntraceExit[],
     category: category.category as Category[],
     product: product.product as Product[],
+    isLoading: entraceExit.isLoading,
   };
 };
 

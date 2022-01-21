@@ -82,15 +82,7 @@ const MarketListing = (props: Props) => {
           bordered={false}
         />
       )}
-      <Modal
-        show={show}
-        onHide={handleClose}
-        onKeyDown={(event) => {
-          if (event.keyCode == 13) {
-            console.log('aqui');
-          }
-        }}
-      >
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Deletar</Modal.Title>
         </Modal.Header>

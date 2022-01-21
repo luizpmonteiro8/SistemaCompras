@@ -85,6 +85,7 @@ const ItemPurchasesRegistration = (props: Props) => {
                 category={props.category}
                 filterProductByCategory={filterProductByCategory}
                 onSubmit={handleSubmit}
+                isLoading={props.isLoading}
               />
             )}
           </div>

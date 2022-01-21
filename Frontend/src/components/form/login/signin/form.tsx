@@ -9,8 +9,8 @@ export type LoginFormProps = {
 };
 
 const formSchema = {
-  email: '',
-  password: '',
+  email: 'teste@teste.com.br',
+  password: '12345678',
 };
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {

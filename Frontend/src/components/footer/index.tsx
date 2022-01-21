@@ -20,19 +20,17 @@ export const Footer = ({ title }: FooterProps) => {
         <h2>Criado por Luiz Pedro</h2>
         <ul className="nav flex-column">
           <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Linkiedn
+            <a href="https://www.linkedin.com/in/luiz-pedro-72b2b1132/" className="nav-link p-0 text-muted">
+              Linkedin
             </a>
           </li>
           <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
+            <a href="mailto:luizpmonteiro008@gmail.com" className="nav-link p-0 text-muted">
               Email
             </a>
           </li>
           <li className="nav-item mb-2">
-            <a href="#" className="nav-link p-0 text-muted">
-              Zap
-            </a>
+            <text>Telefone:(85)98849-3782</text>
           </li>
         </ul>
       </div>

@@ -19,7 +19,8 @@ export const Base = ({ children }: BaseProps) => {
     if (status === 'unauthenticated') {
       route.push('/');
     }
-  }, []);
+  }, [status]);
+
   return (
     <Styled.Wrapper>
       <Styled.MenuContainer>{status === 'authenticated' && <Menu />}</Styled.MenuContainer>
@@ -35,7 +36,9 @@ export const Base = ({ children }: BaseProps) => {
           draggable
           pauseOnHover
         />
-        <Styled.ContentContainer className="col-md-12 ">{children}</Styled.ContentContainer>
+        {status === 'authenticated' && (
+          <Styled.ContentContainer className="col-md-12 ">{children}</Styled.ContentContainer>
+        )}
       </Styled.Container>
       <Styled.FooterContainer className="col-md-12">
         <Footer />

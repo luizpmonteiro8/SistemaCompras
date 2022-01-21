@@ -35,7 +35,6 @@ public class DashboardController {
 	public ResponseEntity<List<PurchasesFromMonth>> getSumPurchasesFromMonth(
 			@RequestParam(value = "year", defaultValue = "2022") Integer year) {		
 		List<PurchasesFromMonth> obj = dashboardService.getSumPurchasesFromMonth(year);
-		
 		return ResponseEntity.ok().body(obj);
 	}
 	

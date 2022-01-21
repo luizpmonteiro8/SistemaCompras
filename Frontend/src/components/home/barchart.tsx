@@ -41,8 +41,8 @@ export const BarChart = ({ values }: BarChartProps) => {
 
   return (
     <Styled.Wrapper>
-      <div className="card bg-light mx-auto col-md-8 mt-5">
-        <h4 className="card-header ">Compras por mês</h4>
+      <div className="card bg-light mx-auto col-md-8 ">
+        <h4 className="card-header ">Compras por mês - ano: 2021</h4>
         <div className="card-body">
           <div id="chart">
             <ApexCharts options={options} series={series} type="bar" width="100%" />

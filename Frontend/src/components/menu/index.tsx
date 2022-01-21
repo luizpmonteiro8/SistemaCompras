@@ -12,7 +12,9 @@ export const Menu = ({ title }: MenuProps) => {
   const service = usePurchasesService();
   const logout = () => {
     signOut({ redirect: false });
-    router.push('/');
+    setTimeout(() => {
+      router.push('/');
+    }, 1000);
   };
 
   return (

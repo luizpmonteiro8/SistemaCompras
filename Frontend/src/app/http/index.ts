@@ -2,7 +2,7 @@ import Axios, { AxiosInstance } from 'axios';
 import { getSession } from 'next-auth/react';
 
 export const httpClient: AxiosInstance = Axios.create({
-  baseURL: 'https://appcomprasluiz.herokuapp.com',
+  baseURL: process.env.BASEURL,
   withCredentials: false,
 });
 

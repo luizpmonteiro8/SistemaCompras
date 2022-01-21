@@ -7,6 +7,7 @@ import { useRouter } from 'next/dist/client/router';
 export type MarketFormProps = {
   market: Market;
   onSubmit: (market: Market, { resetForm, setValues }) => void;
+  isLoading: boolean;
 };
 
 const formSchema = {
@@ -16,7 +17,7 @@ const formSchema = {
   cnpj: '',
 };
 
-export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
+export const MarketForm = ({ market, onSubmit, isLoading }: MarketFormProps) => {
   const route = useRouter();
   const formik = useFormik<Market>({
     initialValues: { ...formSchema, ...market },
@@ -73,7 +74,7 @@ export const MarketForm = ({ market, onSubmit }: MarketFormProps) => {
 
           <div className="row justify-content-center mt-2">
             <div className="col-md-6  text-center ">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 Enviar
               </button>
               <a

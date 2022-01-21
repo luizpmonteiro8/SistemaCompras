@@ -10,6 +10,9 @@ import {
   ADD_ITEM_PURCHASES_UPDATE,
 } from './actionTypes';
 import { messageError, messageSucess } from './../../components/common/toastr/index';
+import { Purchases } from 'app/models/purchases';
+import storeConfig from 'store/storeConfig';
+import { Market } from 'app/models/market';
 
 let returnValue = false;
 
@@ -21,7 +24,8 @@ export const SavePurchases = (purchasesDTO: PurchasesDTO) => {
       .save(purchasesDTO)
       .then((res) => {
         purchasesDTO.id = Number.parseInt(res.location.split('/')[4]);
-        dispatch({ type: SAVE_PURCHASES, payload: purchasesDTO });
+        const purchases = convertDtoToPurchases(purchasesDTO);
+        dispatch({ type: SAVE_PURCHASES, payload: purchases });
         messageSucess('Salvo com sucesso');
         returnValue = true;
       })
@@ -117,4 +121,23 @@ function setError(err) {
   } else {
     messageError(err.response.data.message);
   }
+}
+
+function convertDtoToPurchases(purchaseDTO: PurchasesDTO) {
+  const market: Market[] = storeConfig.getState().market.market;
+  const marketSelected = market.filter((item) => {
+    if (item.id == purchaseDTO.marketId) return item;
+  })[0];
+  const status = purchaseDTO.status == '1' ? 'Em rota' : 'Entregue';
+  const total = purchaseDTO.itemPurchaseDTOList.reduce((total, item) => total + item.quantity * item.quantity, 0);
+
+  const purchase: Purchases = {
+    id: purchaseDTO.id,
+    date: purchaseDTO.date,
+    market: marketSelected,
+    status,
+    itemPurchaseList: [],
+    total,
+  };
+  return purchase;
 }

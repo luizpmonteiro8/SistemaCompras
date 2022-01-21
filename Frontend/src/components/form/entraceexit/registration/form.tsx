@@ -15,6 +15,7 @@ export type EntraceExitFormProps = {
   filterProductByCategory: (idCategory: number) => Product[];
   entraceExit: EntraceExit;
   onSubmit: (entraceExit: EntraceExit, { resetForm, setValues }) => void;
+  isLoading: boolean;
 };
 
 export const EntraceExitForm = ({
@@ -23,6 +24,7 @@ export const EntraceExitForm = ({
   filterProductByCategory,
   entraceExit,
   onSubmit,
+  isLoading,
 }: EntraceExitFormProps) => {
   const formSchema = {
     id: '',
@@ -122,7 +124,7 @@ export const EntraceExitForm = ({
 
           <div className="row justify-content-center mt-2">
             <div className="col-md-6	text-center ">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 Enviar
               </button>
               <a

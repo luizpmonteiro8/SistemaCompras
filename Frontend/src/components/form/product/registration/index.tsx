@@ -42,7 +42,7 @@ const ProductRegistration = (props: Props) => {
   return (
     <div className="card bg-light my-2 mx-auto col-md-8" style={{}}>
       <h4 className="card-header ">Produto</h4>
-      <ProductForm product={product} onSubmit={handleSubmit} category={props.category} />
+      <ProductForm product={product} onSubmit={handleSubmit} category={props.category} isLoading={props.isLoading} />
       <div className="card-body"></div>
     </div>
   );

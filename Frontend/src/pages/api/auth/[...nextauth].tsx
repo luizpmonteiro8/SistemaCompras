@@ -25,15 +25,16 @@ export default NextAuth({
           throw new Error('Email e senha requerido.');
         }
         const credential: Credential = { email: credentials.email, password: credentials.password };
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/login`;
+        const url = `${process.env.BASEURL}/login`;
 
-        const res = await fetch('https://appcomprasluiz.herokuapp.com/login', {
+        const res = await fetch(url, {
           method: 'POST',
           body: JSON.stringify(credential),
           headers: {
             'Content-Type': 'application/json',
           },
         });
+
         if (!res.ok) {
           throw new Error('Email ou senha incorreta!');
         }

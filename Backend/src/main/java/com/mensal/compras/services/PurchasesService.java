@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -33,9 +35,11 @@ import com.mensal.compras.repositories.StockRepository;
 import com.mensal.compras.services.exception.DataIntegrityException;
 import com.mensal.compras.services.exception.ObjectNFException;
 
-
 @Service
 public class PurchasesService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PurchasesService.class);
+	
 	@Autowired
 	private PurchasesRepository repo;
 
@@ -85,7 +89,16 @@ public class PurchasesService {
 			stockRepo.saveAll(stockList);
 		}
 
-		emailService.sendOrderConfirmationHtmlEmail(obj);
+		try {
+			LOG.info("Send email...");
+			emailService.sendOrderConfirmationHtmlEmail(obj);
+			
+		}catch (Exception e) {
+			LOG.info("Erro ao enviar");
+			LOG.info(e.getMessage());
+		}
+		
+
 		return obj;
 	}
 

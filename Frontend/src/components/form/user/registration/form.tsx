@@ -22,12 +22,6 @@ export const UserForm = ({ user, onSubmit }: UserFormProps) => {
     validationSchema: validationScheme,
   });
 
-  useEffect(() => {
-    console.log(formik.errors);
-    //  return null;
-  }),
-    [formik.errors];
-
   return (
     <form className="form-group" onSubmit={formik.handleSubmit}>
       <div>

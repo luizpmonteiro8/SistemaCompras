@@ -13,7 +13,6 @@ export const usePurchasesService = () => {
 
   const update = async (purchases: PurchasesDTO): Promise<void> => {
     const url = `${resourceURL}/${purchases.id}`;
-    console.log(url);
     await httpClient.put<Purchases>(url, purchases);
   };
 

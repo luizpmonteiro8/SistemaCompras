@@ -42,7 +42,11 @@ public class DashboardService {
 	public List<PurchasesFromMonth> getSumPurchasesFromMonth(Integer year) {
 		List<PurchasesFromMonth> obj = purchasesRepo.getSumPurchasesFromMonth(year);
 
-		Integer monthMax = obj.stream().mapToInt(PurchasesFromMonth::getMonth).max().getAsInt();
+		if (obj.isEmpty()) {
+			return obj;
+		}
+
+		Integer monthMax = 12;//obj.stream().mapToInt(PurchasesFromMonth::getMonth).max().getAsInt();
 
 		List<Integer> listMonth = IntStream.rangeClosed(1, monthMax).boxed().collect(Collectors.toList());
 

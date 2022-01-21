@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,7 +19,7 @@ import com.mensal.compras.entity.Purchases;
 import com.mensal.compras.entity.User;
 
 public abstract class AbstractEmailService implements EmailService {
-
+	
 	@Value("${default.sender}")
 	private String sender;
 
@@ -35,7 +37,7 @@ public abstract class AbstractEmailService implements EmailService {
 
 	protected SimpleMailMessage prepareSimpleMailMessageFromPedido(Purchases obj) {
 		SimpleMailMessage sm = new SimpleMailMessage();
-		sm.setTo(UserService.authenticated().getUsername());
+		sm.setTo(UserService.authenticated().getEmail());
 		sm.setFrom(sender);
 		sm.setSubject("Pedido confirmado! Código: " + obj.getId());
 		sm.setSentDate(new Date(System.currentTimeMillis()));
@@ -62,7 +64,7 @@ public abstract class AbstractEmailService implements EmailService {
 	protected MimeMessage prepareMimeMessageFromPedido(Purchases obj) throws MessagingException {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper mmh = new MimeMessageHelper(mimeMessage, true);
-		mmh.setTo(UserService.authenticated().getUsername());
+		mmh.setTo(UserService.authenticated().getEmail());
 		mmh.setFrom(sender);
 		mmh.setSubject("Pedido confirmado! Código: " + obj.getId());
 		mmh.setSentDate(new Date(System.currentTimeMillis()));

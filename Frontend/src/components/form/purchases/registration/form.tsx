@@ -5,15 +5,18 @@ import { PurchasesDTO } from 'app/models/purchasesDTO';
 import { Market } from 'app/models/market';
 import { convertDataAutoComplete } from 'components/common/autoComplete/convertdata';
 import { validationScheme } from './validationScheme';
+import { useRouter } from 'next/router';
 
 export type PurchasesFormProps = {
   purchasesDTO: PurchasesDTO;
   market: Market[];
   onSubmit: (purchasesDTO: PurchasesDTO, { resetForm, setValues }) => void;
   removeCookie: () => void;
+  isLoading: boolean;
 };
 
-export const PurchasesForm = ({ purchasesDTO, market, onSubmit, removeCookie }: PurchasesFormProps) => {
+export const PurchasesForm = ({ purchasesDTO, market, onSubmit, removeCookie, isLoading }: PurchasesFormProps) => {
+  const router = useRouter();
   const formSchema = {
     id: undefined,
     status: 1,
@@ -91,13 +94,20 @@ export const PurchasesForm = ({ purchasesDTO, market, onSubmit, removeCookie }: 
           {formik.values.id === undefined || purchasesDTO.status === 'Em rota' ? (
             <div className="row justify-content-center mt-2">
               <div className="col-md-6	text-center ">
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>
                   Enviar
                 </button>
                 <a href="/" className="btn btn-danger ms-2">
                   Cancelar
                 </a>
-                <button type="button" onClick={removeCookie} className="btn btn-warning ms-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    removeCookie();
+                    router.reload();
+                  }}
+                  className="btn btn-warning ms-2"
+                >
                   Resetar
                 </button>
               </div>

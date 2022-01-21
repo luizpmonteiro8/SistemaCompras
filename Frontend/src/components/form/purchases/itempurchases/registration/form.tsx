@@ -13,9 +13,16 @@ export type ItemPurchasesFormProps = {
   category: Category[];
   filterProductByCategory: (idCategory: number) => Product[];
   onSubmit: (itemPurchases: itemPurchaseDTO, { resetForm, setValues }) => void;
+  isLoading: boolean;
 };
 
-export const ItemPurchasesForm = ({ product, category, filterProductByCategory, onSubmit }: ItemPurchasesFormProps) => {
+export const ItemPurchasesForm = ({
+  product,
+  category,
+  filterProductByCategory,
+  onSubmit,
+  isLoading,
+}: ItemPurchasesFormProps) => {
   let loading: boolean;
 
   const formSchema = {
@@ -122,7 +129,7 @@ export const ItemPurchasesForm = ({ product, category, filterProductByCategory, 
           </div>
           <div className="row justify-content-center mt-2">
             <div className="col-md-6  text-center ">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 Enviar
               </button>
               <a href="/" className="btn btn-danger ms-2">

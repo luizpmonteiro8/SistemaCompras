@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
     `}
   body {
     overflow-y: hidden;
+    background-color: '#0000ff';
   }
   .row {
     margin: 0;
@@ -16,7 +17,10 @@ export const Wrapper = styled.div`
 `;
 
 export const Container = styled.div`
-  ${({ theme }) => css``}
+  ${({ theme }) => css`
+    @media(min-width: 949px) {
+      min-height: 78vh;
+  `}
 `;
 
 export const MenuContainer = styled.div`

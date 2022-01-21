@@ -38,7 +38,7 @@ const PurchasesRegistration = (props: Props) => {
     }
   };
 
-  const handleSubmit = (purchasesDTO: PurchasesDTO, { resetForm, setValues }) => {
+  const handleSubmit = (purchasesDTO: PurchasesDTO, { resetForm }) => {
     changeStatus(purchasesDTO);
     try {
       if (purchasesDTO.id > 0) {
@@ -52,11 +52,15 @@ const PurchasesRegistration = (props: Props) => {
         }
       } else {
         purchasesDTO.itemPurchaseDTOList = getItemCookie();
-        if (props.savePurchases(purchasesDTO)) {
-          resetForm();
-          removeItemCookie();
-          router.push('/compras/lista');
-          messageSucess('Salvo com sucesso.');
+        if (typeof purchasesDTO.itemPurchaseDTOList != 'undefined') {
+          if (props.savePurchases(purchasesDTO)) {
+            resetForm();
+            removeItemCookie();
+            router.push('/compras/lista');
+            messageSucess('Salvo com sucesso.');
+          }
+        } else {
+          messageError('Adicione item a compra!');
         }
       }
     } catch (err) {
@@ -75,6 +79,7 @@ const PurchasesRegistration = (props: Props) => {
               market={props.market}
               removeCookie={removeItemCookie}
               onSubmit={handleSubmit}
+              isLoading={props.isLoading}
             />
           )}
         </div>

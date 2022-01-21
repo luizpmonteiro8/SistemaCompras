@@ -4,6 +4,6 @@ export const Wrapper = styled.div`
   ${({ theme }) => css`
     display: flex;
     flex-direction: column;
-    margin-top: 50px;
+    margin-top: 5px;
   `}
 `;

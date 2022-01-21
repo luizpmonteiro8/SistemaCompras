@@ -4,11 +4,28 @@ import { signIn } from 'next-auth/react';
 import { messageError } from 'components';
 import * as Styled from './styles';
 import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-const Login = () => {
+type Props = {
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  loading: boolean;
+};
+const Login = ({ setLoading, loading }: Props) => {
   const route = useRouter();
+  const [crendetialLoading, setCredencital] = useState<Credential>();
+
+  useEffect(() => {
+    if (loading && crendetialLoading != null) {
+      const interval = setInterval(() => {
+        handleSubmit(crendetialLoading);
+      }, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [loading]);
 
   const handleSubmit = async (credential: Credential) => {
+    setCredencital(credential);
+    setLoading(true);
     const res = await signIn('credentials', {
       redirect: false,
       email: credential.email,
@@ -16,11 +33,9 @@ const Login = () => {
     });
     if (!res.error) {
       route.push('home');
+      setLoading(false);
     }
-    if (res.error.includes('failed')) {
-      messageError('Não foi possível conectar com servidor!');
-    }
-    if (res.error.includes('Email ou senha incorreta')) {
+    if (res.error?.includes('Email ou senha incorreta')) {
       messageError(res.error);
     }
   };

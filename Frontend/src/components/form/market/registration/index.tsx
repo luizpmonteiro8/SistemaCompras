@@ -40,7 +40,7 @@ const MarketRegistration = (props: Props) => {
   return (
     <div className="card bg-light my-2 mx-auto col-md-8" style={{}}>
       <h4 className="card-header ">Mercado</h4>
-      <MarketForm market={market} onSubmit={handleSubmit} />
+      <MarketForm market={market} onSubmit={handleSubmit} isLoading={props.isLoading} />
       <div className="card-body"></div>
     </div>
   );
@@ -49,6 +49,7 @@ const MarketRegistration = (props: Props) => {
 const mapStateToProps = ({ market }) => {
   return {
     market: market.market as Market[],
+    isLoading: market.isLoading,
   };
 };
 
