@@ -1,5 +1,6 @@
 import { UserRegistration } from 'components';
 import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 import { Base } from '../../base';
 import * as Styled from './styles';
 
@@ -9,9 +10,18 @@ export const UserRegistationTp = () => {
   }, []);
   return (
     <Styled.Wrapper>
-      <Base>
-        <UserRegistration />
-      </Base>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <UserRegistration />
     </Styled.Wrapper>
   );
 };

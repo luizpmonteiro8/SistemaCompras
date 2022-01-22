@@ -1,4 +1,5 @@
-import { ToastContainer, toast } from 'react-toastify';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { toast } from 'react-toastify';
 
 export function messageError(mensagem) {
   toast.error(mensagem, {

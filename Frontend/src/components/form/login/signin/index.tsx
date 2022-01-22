@@ -1,7 +1,7 @@
 import { Credential } from 'app/models/user';
 import { LoginForm } from './form';
 import { signIn } from 'next-auth/react';
-import { messageError } from 'components';
+import { messageError, messageInfo } from 'components';
 import * as Styled from './styles';
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ type Props = {
 const Login = ({ setLoading, loading }: Props) => {
   const route = useRouter();
   const [crendetialLoading, setCredencital] = useState<Credential>();
+  let controlMessage = true;
 
   useEffect(() => {
     if (loading && crendetialLoading != null) {
@@ -26,6 +27,7 @@ const Login = ({ setLoading, loading }: Props) => {
   const handleSubmit = async (credential: Credential) => {
     setCredencital(credential);
     setLoading(true);
+
     const res = await signIn('credentials', {
       redirect: false,
       email: credential.email,
@@ -35,8 +37,16 @@ const Login = ({ setLoading, loading }: Props) => {
       route.push('home');
       setLoading(false);
     }
-    if (res.error?.includes('Email ou senha incorreta')) {
+    if (res.error.includes('failed')) {
+      if (controlMessage) {
+        controlMessage = false;
+        messageInfo('Aguarde enquanto servidor ativa!');
+      }
+    }
+
+    if (res.error.includes('Email ou senha incorreta')) {
       messageError(res.error);
+      setLoading(false);
     }
   };
 
