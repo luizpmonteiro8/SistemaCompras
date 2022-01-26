@@ -26,13 +26,13 @@ const MarketRegistration = (props: Props) => {
     if (marketItem.id > 0) {
       if (await props.updateMarket(marketItem)) {
         resetForm({});
-        setValues({ id: '', name: '', blocked: false, cnpj: '' });
+        setValues({ id: null, name: '', blocked: false, cnpj: null });
         router.replace('/cadastros/mercados');
       }
     } else {
-      const returnValue = await props.saveMarket(marketItem);
-      if (returnValue) {
+      if (await props.saveMarket(marketItem)) {
         resetForm({});
+        setValues({ id: null, name: '', blocked: false, cnpj: null });
       }
     }
   };

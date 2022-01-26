@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useStockService } from '../../app/services';
 import { LOAD_ALL_STOCK, IS_LOADING_STOCK } from './actionTypes';
+import { setMessage } from './message';
 
 export const LoadAllStock = () => {
   const stockService = useStockService();
@@ -11,11 +12,7 @@ export const LoadAllStock = () => {
       .then((res) => dispatch({ type: LOAD_ALL_STOCK, payload: res }))
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
   };
@@ -24,3 +21,17 @@ export const LoadAllStock = () => {
 const isLoading = (value: boolean) => {
   return { type: IS_LOADING_STOCK, payload: value };
 };
+
+function setError(err: any) {
+  if (String(err.message).includes('Network Error')) {
+    return {
+      title: 'Erro',
+      text: 'Não foi possivel conectar com servidor.',
+    };
+  } else {
+    return {
+      title: 'Erro',
+      text: err.response.data.message,
+    };
+  }
+}

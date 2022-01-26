@@ -11,6 +11,7 @@ interface InputProps {
   error?: string;
   onChangeText: (item: any) => void;
   keyboardType?: KeyboardTypeOptions;
+  secureTextEntry?: boolean;
 }
 
 export const Input = ({
@@ -20,6 +21,7 @@ export const Input = ({
   error,
   onChangeText,
   keyboardType = 'default',
+  secureTextEntry = false,
 }: InputProps) => {
   return (
     <>
@@ -32,6 +34,7 @@ export const Input = ({
         error={!!error}
         disabled={disabled}
         keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
         right={
           !!error && (
             <TextInput.Icon

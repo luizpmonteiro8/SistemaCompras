@@ -27,9 +27,9 @@ export const ItemPurchasesForm = ({
 
   const formSchema = {
     id: 0,
-    quantity: 0,
+    quantity: null,
     validaty: null,
-    price: 0,
+    price: null,
     productId: null,
   };
 
@@ -100,7 +100,7 @@ export const ItemPurchasesForm = ({
               onChange={(e) => formik.setFieldValue('quantity', e.target.value)}
               label="Quantidade"
               type="number"
-              value={formik.values.quantity === 0 ? '' : formik.values.quantity}
+              value={formik.values.quantity == null ? '' : formik.values.quantity}
               error={formik.touched.quantity && formik.errors.quantity ? formik.errors.quantity : ''}
             />
           </div>
@@ -111,7 +111,7 @@ export const ItemPurchasesForm = ({
               onChange={(e) => formik.setFieldValue('price', e.target.value)}
               label="Preço"
               type="number"
-              value={formik.values.price === 0 ? '' : formik.values.price}
+              value={formik.values.price == null ? '' : formik.values.price}
               error={formik.touched.price && formik.errors.price ? formik.errors.price : ''}
             />
           </div>
@@ -132,8 +132,14 @@ export const ItemPurchasesForm = ({
               <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 Enviar
               </button>
-              <a href="/" className="btn btn-danger ms-2">
-                Cancelar
+              <a
+                onClick={() => {
+                  formik.resetForm();
+                  formik.setValues({ ...formSchema });
+                }}
+                className="btn btn-danger ms-2"
+              >
+                Limpar
               </a>
             </div>
           </div>

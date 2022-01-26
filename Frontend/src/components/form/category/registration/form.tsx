@@ -11,7 +11,7 @@ export type CategoryFormProps = {
 };
 
 const formSchema = {
-  id: '',
+  id: null,
   name: '',
 };
 
@@ -35,7 +35,7 @@ export const CategoryForm = ({ category, onSubmit, isLoading }: CategoryFormProp
                 id="id"
                 name="id"
                 onChange={formik.handleChange}
-                value={formik.values.id}
+                value={formik.values.id == null ? '' : formik.values.id}
                 label="Id"
               />
             }
@@ -62,6 +62,7 @@ export const CategoryForm = ({ category, onSubmit, isLoading }: CategoryFormProp
                 onClick={() => {
                   router.replace('/cadastros/categorias');
                   formik.resetForm();
+                  formik.setValues({ ...formSchema });
                 }}
                 className="btn btn-danger ms-2"
               >

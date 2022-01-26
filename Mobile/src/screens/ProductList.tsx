@@ -51,12 +51,8 @@ class ProductList extends Component<Props> {
           title="Deletar produto"
           text={` Deseja deletar produto ${this.state.productSelectDeleteName}?`}
           onPress={async () => {
-            try {
-              await this.props.deleteProduct(this.state.productSelectDeleteId);
-              this.setState({ ...this.state, dialogDeleteShow: false });
-            } catch (err: any) {
-              this.props.setMessage('Erro', err.message);
-            }
+            await this.props.deleteProduct(this.state.productSelectDeleteId);
+            this.setState({ ...this.state, dialogDeleteShow: false });
           }}
         />
 
@@ -64,6 +60,7 @@ class ProductList extends Component<Props> {
           <FlatList
             keyExtractor={(item) => String(item.id)}
             data={this.props.product}
+            initialNumToRender={20}
             renderItem={({ item: product }) => {
               return (
                 <>

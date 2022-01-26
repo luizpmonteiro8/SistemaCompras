@@ -11,10 +11,10 @@ export type MarketFormProps = {
 };
 
 const formSchema = {
-  id: '',
+  id: null,
   name: '',
   blocked: false,
-  cnpj: '',
+  cnpj: null,
 };
 
 export const MarketForm = ({ market, onSubmit, isLoading }: MarketFormProps) => {
@@ -31,7 +31,16 @@ export const MarketForm = ({ market, onSubmit, isLoading }: MarketFormProps) => 
       <div>
         <div className="row m-2">
           <div className="col-md-12 ">
-            {<Input disabled id="id" name="id" onChange={formik.handleChange} value={formik.values.id} label="Id" />}
+            {
+              <Input
+                disabled
+                id="id"
+                name="id"
+                onChange={formik.handleChange}
+                value={formik.values.id == null ? '' : formik.values.id}
+                label="Id"
+              />
+            }
           </div>
           <div className="col-md-12 "></div>
           <div className="col-md-12 ">
@@ -51,7 +60,7 @@ export const MarketForm = ({ market, onSubmit, isLoading }: MarketFormProps) => 
               name="cnpj"
               type="number"
               onChange={formik.handleChange}
-              value={formik.values.cnpj}
+              value={formik.values.cnpj == null ? '' : formik.values.cnpj}
               error={formik.touched.cnpj && formik.errors.cnpj ? formik.errors.cnpj : ''}
               label="CNPJ"
             />
@@ -81,6 +90,7 @@ export const MarketForm = ({ market, onSubmit, isLoading }: MarketFormProps) => 
                 onClick={() => {
                   route.replace('/cadastros/mercados');
                   formik.resetForm();
+                  formik.setValues({ ...formSchema });
                 }}
                 className="btn btn-danger ms-2"
               >

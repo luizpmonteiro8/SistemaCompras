@@ -2,7 +2,10 @@
 import React from 'react';
 import { Text } from 'react-native';
 
-export const Line = () => {
+type Props = {
+  width?: string;
+};
+export const Line = ({ width = '100%' }: Props) => {
   return (
     <>
       <Text
@@ -10,6 +13,8 @@ export const Line = () => {
           height: 1,
           borderBottomColor: '#91a3b0',
           borderBottomWidth: 1,
+          width: width,
+          marginTop: 20,
         }}
       ></Text>
     </>

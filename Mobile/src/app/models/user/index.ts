@@ -11,3 +11,7 @@ export type Credential = {
   token: string;
   exp: Date;
 };
+
+export type EmailDTO = {
+  email: string;
+};

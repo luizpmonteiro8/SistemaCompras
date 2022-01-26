@@ -55,14 +55,10 @@ class EntraceExitList extends Component<Props> {
           title="Deletar entrada/saida"
           text={`Deseja deletar entrada/saida id: {this.state.entraceexitSelectDeleteId}?`}
           onPress={async () => {
-            try {
-              await this.props.deleteEntraceExit(
-                this.state.entraceexitSelectDeleteId,
-              );
-              this.setState({ ...this.state, dialogDeleteShow: false });
-            } catch (err: any) {
-              this.props.setMessage('Erro', err.message);
-            }
+            await this.props.deleteEntraceExit(
+              this.state.entraceexitSelectDeleteId,
+            );
+            this.setState({ ...this.state, dialogDeleteShow: false });
           }}
         />
 

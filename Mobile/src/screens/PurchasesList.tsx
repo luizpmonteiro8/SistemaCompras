@@ -33,7 +33,7 @@ class PurchasesList extends Component<Props> {
     try {
       await this.props.loadAllPurchases();
     } catch (err) {
-      console.log('erro', err);
+      null;
     }
   };
 
@@ -45,17 +45,13 @@ class PurchasesList extends Component<Props> {
           onDismiss={() => {
             this.setState({ ...this.state, dialogDeleteShow: false });
           }}
-          title="Deletar produto"
-          text={` Deseja deletar produto ${this.state.purchasesSelectDeleteId}?`}
+          title="Deletar compra"
+          text={` Deseja deletar compra ${this.state.purchasesSelectDeleteId}?`}
           onPress={async () => {
-            try {
-              await this.props.deletePurchases(
-                this.state.purchasesSelectDeleteId,
-              );
-              this.setState({ ...this.state, dialogDeleteShow: false });
-            } catch (err: any) {
-              this.props.setMessage('Erro', err.message);
-            }
+            await this.props.deletePurchases(
+              this.state.purchasesSelectDeleteId,
+            );
+            this.setState({ ...this.state, dialogDeleteShow: false });
           }}
         />
         {this.props.purchases.length >= 1 && (

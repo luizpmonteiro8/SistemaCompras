@@ -19,7 +19,7 @@ import com.mensal.compras.entity.Purchases;
 import com.mensal.compras.entity.User;
 
 public abstract class AbstractEmailService implements EmailService {
-	
+
 	@Value("${default.sender}")
 	private String sender;
 

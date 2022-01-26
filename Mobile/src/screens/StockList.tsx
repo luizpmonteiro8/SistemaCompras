@@ -26,7 +26,7 @@ class StockList extends Component<Props> {
     try {
       this.props.loadAllStock();
     } catch (err) {
-      console.log('erro', err);
+      null;
     }
   };
 

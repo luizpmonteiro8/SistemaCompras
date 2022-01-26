@@ -9,6 +9,7 @@ import {
   LOAD_ALL_CATEGORY,
   IS_LOADING_CATEGORY,
 } from './actionTypes';
+import { setMessage } from './message';
 
 let returnValue = false;
 
@@ -25,11 +26,7 @@ export const SaveCategory = (category: Category) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -48,11 +45,7 @@ export const UpdateCategory = (category: Category) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -71,11 +64,7 @@ export const DeleteCategory = (id: number) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -91,11 +80,7 @@ export const LoadAllCategory = () => {
       .then((res) => dispatch({ type: LOAD_ALL_CATEGORY, payload: res }))
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
   };
@@ -104,3 +89,17 @@ export const LoadAllCategory = () => {
 const isLoading = (value: boolean) => {
   return { type: IS_LOADING_CATEGORY, payload: value };
 };
+
+function setError(err: any) {
+  if (String(err.message).includes('Network Error')) {
+    return {
+      title: 'Erro',
+      text: 'Não foi possivel conectar com servidor.',
+    };
+  } else {
+    return {
+      title: 'Erro',
+      text: err.response.data.message,
+    };
+  }
+}

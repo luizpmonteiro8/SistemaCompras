@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -19,6 +20,7 @@ import MarketList from './screens/MarketList';
 import PurchasesForm from './screens/PurchasesForm';
 import PurchasesList from './screens/PurchasesList';
 import PurchasesView from './screens/PurchasesView';
+import { PurchasesPDF } from './screens/PurchasesPDF';
 import StockList from './screens/StockList';
 import EntraceExitForm from './screens/EntraceExitForm';
 import EntraceExitList from './screens/EntraceExitList';
@@ -30,6 +32,8 @@ import { List } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Line } from './components/common/line';
 import { CommonActions } from '@react-navigation/native';
+import Register from './screens/Register';
+import { usePurchasesService } from './app/services';
 
 const Drawer = createDrawerNavigator();
 
@@ -101,6 +105,11 @@ function NavigatorMenu() {
           component={PurchasesView}
         />
         <Drawer.Screen
+          name="PurchasesPDF"
+          options={{ title: 'Lista de compras PDF' }}
+          component={PurchasesPDF}
+        />
+        <Drawer.Screen
           name="Login"
           options={{ title: 'Login', headerShown: false }}
           component={Login}
@@ -109,6 +118,11 @@ function NavigatorMenu() {
           name="Home"
           options={{ title: 'Home' }}
           component={Home}
+        />
+        <Drawer.Screen
+          name="Register"
+          options={{ title: 'Cadastro de usuário', headerShown: false }}
+          component={Register}
         />
       </Drawer.Navigator>
     </NavigationContainer>
@@ -149,6 +163,12 @@ const DrawerContent = (props: any) => {
           title="Sistema compras"
           titleStyle={{ fontSize: 22, fontWeight: 'bold' }}
         >
+          <List.Item
+            title="Home"
+            onPress={() => {
+              props.navigation.navigate('Home');
+            }}
+          />
           <List.Accordion
             title="Cadastros"
             left={(_) => <Icon name="form" size={30} />}
@@ -189,25 +209,14 @@ const DrawerContent = (props: any) => {
                 );
               }
             })}
+            <List.Item
+              title="Lista de compras(PDF)"
+              onPress={() => {
+                props.navigation.navigate('PurchasesPDF');
+              }}
+            />
           </List.Accordion>
-          <List.Accordion
-            title="Outros"
-            left={(_) => <Icon name="form" size={30} />}
-          >
-            {drawerInf.map((item: DrawerInfo, index) => {
-              if (!item.name.includes('List') && !item.name.includes('Form')) {
-                return (
-                  <List.Item
-                    key={index}
-                    title={item.title}
-                    onPress={() => {
-                      props.navigation.navigate(item.name);
-                    }}
-                  />
-                );
-              }
-            })}
-          </List.Accordion>
+
           <Line />
           <DrawerItem
             label="Logout"

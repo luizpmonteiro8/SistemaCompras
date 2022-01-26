@@ -1,5 +1,5 @@
 import { httpClient } from '../http';
-import { User } from '../models/user';
+import { EmailDTO, User } from '../models/user';
 import axios, { AxiosResponse, AxiosResponseHeaders } from 'axios';
 
 const resourceURL = '/users';
@@ -37,11 +37,17 @@ export const useUserService = () => {
     return response.authorization;
   };
 
+  const forgotPassword = async (emailDTO: EmailDTO): Promise<void> => {
+    const url = 'http://192.168.1.10:8080/auth/forgot';
+    await axios.post(url, emailDTO);
+  };
+
   return {
     save,
     update,
     loadUser,
     deleteUser,
     login,
+    forgotPassword,
   };
 };

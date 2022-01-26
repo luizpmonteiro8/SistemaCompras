@@ -57,12 +57,9 @@ class EntraceExitForm extends Component<Props> {
   };
 
   componentDidMount = () => {
-    try {
-      this.props.loadAllCategory();
-      this.props.loadAllProduct();
-    } catch (err: any) {
-      this.props.setMessage('Erro', err.message);
-    }
+    this.props.loadAllCategory();
+    this.props.loadAllProduct();
+
     if (typeof this.props.route.params != 'undefined') {
       const entraceexit = this.props.route.params.entraceexit;
       this.setState({ ...this.state, entraceexit });
@@ -73,22 +70,17 @@ class EntraceExitForm extends Component<Props> {
     return (
       <Formik
         initialValues={{ ...this.state.entraceexit }}
-        onSubmit={async (values, { setSubmitting, resetForm, setValues }) => {
-          try {
-            if (values.id == 0) {
-              await this.props.saveEntraceExit(values);
-            } else {
-              await this.props.updateEntraceExit(values);
+        onSubmit={async (values, { setSubmitting }) => {
+          if (values.id == 0) {
+            if (await this.props.saveEntraceExit(values)) {
+              this.props.navigation.navigate('EntraceExitList');
             }
-
-            resetForm();
-            setValues({ ...initialValues.entraceexit });
-            setSubmitting(false);
-            this.props.navigation.navigate('EntraceExitList');
-          } catch (err: any) {
-            setSubmitting(false);
-            this.props.setMessage('Erro', err.message);
+          } else {
+            if (await this.props.updateEntraceExit(values)) {
+              this.props.navigation.navigate('EntraceExitList');
+            }
           }
+          setSubmitting(false);
         }}
         validationSchema={validationScheme}
         enableReinitialize
@@ -99,9 +91,9 @@ class EntraceExitForm extends Component<Props> {
           values,
           errors,
           isSubmitting,
-          setValues,
           setFieldValue,
           touched,
+          resetForm,
         }) => (
           <ScrollView contentContainerStyle={{ flex: 1 }}>
             <View style={styles.container}>
@@ -178,7 +170,7 @@ class EntraceExitForm extends Component<Props> {
                 label="Quantidade"
                 value={values.quantity === 0 ? '' : values.quantity.toString()}
                 onChangeText={handleChange('quantity')}
-                error={errors.quantity}
+                error={touched.quantity ? errors.quantity : ''}
               />
 
               <View style={styles.viewButton}>
@@ -190,7 +182,10 @@ class EntraceExitForm extends Component<Props> {
 
                 <Button
                   label="Limpar"
-                  onPress={() => setValues(initialValues.entraceexit)}
+                  onPress={() => {
+                    this.setState({ ...this.state, ...initialValues });
+                    resetForm();
+                  }}
                   marginLeft={10}
                 />
               </View>

@@ -52,11 +52,7 @@ export const UpdatePurchases = (purchasesDTO: PurchasesDTO) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -98,11 +94,7 @@ export const LoadAllPurchasesDTO = (id: any) => {
       .then((res) => dispatch({ type: LOAD_PURCHASES_DTO, payload: res }))
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
   };
@@ -117,11 +109,7 @@ export const LoadAllPurchases = () => {
       .then((res) => dispatch({ type: LOAD_ALL_PURCHASES, payload: res }))
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
   };
@@ -134,3 +122,17 @@ export const addItemPurchasesUpdate = (itemPurchasesUpdate: any) => {
 const isLoading = (value: boolean) => {
   return { type: IS_LOADING_PURCHASES, payload: value };
 };
+
+function setError(err: any) {
+  if (String(err.message).includes('Network Error')) {
+    return {
+      title: 'Erro',
+      text: 'Não foi possivel conectar com servidor.',
+    };
+  } else {
+    return {
+      title: 'Erro',
+      text: err.response.data.message,
+    };
+  }
+}

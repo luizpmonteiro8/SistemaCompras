@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mensal.compras.entity.User;
 import com.mensal.compras.repositories.UserRepository;
+import com.mensal.compras.services.exception.DataIntegrityException;
 import com.mensal.compras.services.exception.ObjectNFException;
 
 @Service
@@ -15,32 +16,36 @@ public class AuthService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
-	private BCryptPasswordEncoder pe;	
+	private BCryptPasswordEncoder pe;
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	private Random rand = new Random();
-	
+
 	public void sendNewPassword(String email) {
-		
+
+		if (email.contains("teste@teste.com.br")) {
+			throw new DataIntegrityException("Alteração de senha não autorizada para este usuário!");
+		}
+
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
-			throw new ObjectNFException("Email não encontrado");
+			throw new ObjectNFException("Email não encontrado!");
 		}
-		
+
 		String newPass = newPassword();
 		user.setPassword(pe.encode(newPass));
-		
+
 		userRepository.save(user);
 		emailService.sendNewPasswordEmail(user, newPass);
 	}
 
 	private String newPassword() {
 		char[] vet = new char[10];
-		for (int i=0; i<10; i++) {
+		for (int i = 0; i < 10; i++) {
 			vet[i] = randomChar();
 		}
 		return new String(vet);
@@ -48,13 +53,11 @@ public class AuthService {
 
 	private char randomChar() {
 		int opt = rand.nextInt(3);
-		if (opt == 0) { 
+		if (opt == 0) {
 			return (char) (rand.nextInt(10) + 48);
-		}
-		else if (opt == 1) { 
+		} else if (opt == 1) {
 			return (char) (rand.nextInt(26) + 65);
-		}
-		else { 
+		} else {
 			return (char) (rand.nextInt(26) + 97);
 		}
 	}

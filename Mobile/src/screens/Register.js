@@ -8,7 +8,8 @@ import {
   TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { createUser } from '../store/actions/user';
+import { setMessage } from '../store/actions/message';
+import { CreateUser } from '../store/actions/user';
 
 class Register extends Component {
   state = {
@@ -24,7 +25,6 @@ class Register extends Component {
         email: '',
         password: '',
       });
-      this.props.navigation.navigate('Profile'); // Feed
     }
   };
 
@@ -54,7 +54,19 @@ class Register extends Component {
         />
         <TouchableOpacity
           onPress={() => {
-            this.props.onCreateUser(this.state);
+            if (
+              this.state.email != '' &&
+              this.state.name != '' &&
+              this.state.senha != ''
+            ) {
+              this.props.onCreateUser({
+                name: this.state.name,
+                email: this.state.email,
+                password: this.state.password,
+              });
+            } else {
+              this.props.setMessage('Erro', 'Preencha os campos.');
+            }
           }}
           style={styles.buttom}
         >
@@ -99,10 +111,12 @@ const mapStateToProps = ({ user }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onCreateUser: (user) => dispatch(createUser(user)),
+    setMessage: (title: string, text: string) =>
+      dispatch(setMessage({ title, text })),
+    onCreateUser: (user) => dispatch(CreateUser(user)),
   };
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-export default connector(mapStateToProps, mapDispatchToProps)(Register);
+export default connector(Register);

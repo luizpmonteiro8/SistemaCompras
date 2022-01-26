@@ -23,13 +23,11 @@ const StockListing = (props: Props) => {
     {
       dataField: 'category',
       text: 'Categoria',
-      sort: true,
       formatter: (cellContent, row: Stock) => <div>{row?.product.category.name}</div>,
     },
     {
       dataField: 'product',
       text: 'Produto',
-      sort: true,
       formatter: (cellContent, row: Stock) => <div>{row?.product.name}</div>,
     },
     {
@@ -46,7 +44,7 @@ const StockListing = (props: Props) => {
 
   return (
     <Styled.Wrapper>
-      {props.stock.length >= 1 && (
+      {props.stock && (
         <BootstrapTable
           keyField="id"
           data={props.stock}

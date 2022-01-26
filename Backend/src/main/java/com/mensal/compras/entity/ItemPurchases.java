@@ -2,8 +2,9 @@ package com.mensal.compras.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Date;
+
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.persistence.Entity;

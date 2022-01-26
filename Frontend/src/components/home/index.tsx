@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CountDashboard, SumDashboard, TopDashboard } from 'store/actions/dashboard';
 import { BarChart } from './barchart';
+import { CardInfo } from './cardInfo';
 import * as Styled from './styles';
+import { CountDashboardType } from '../../app/models/dashboard';
 
 type Props = PropsFromRedux;
 
@@ -14,13 +16,7 @@ const Home = (props: Props) => {
   }, []);
   return (
     <Styled.Wrapper>
-      <div className="card bg-light mx-auto col-md-3">
-        <h4 className="card-header ">Cadastros</h4>
-        <div className="card-body">
-          Produtos: {props.count.productCount} <br />
-          Compras: {props.count.purchasesCount}
-        </div>
-      </div>
+      <CardInfo productCount={props.count.productCount} purchasesCount={props.count.purchasesCount} />
       <BarChart values={props.sum} />
     </Styled.Wrapper>
   );
@@ -28,7 +24,7 @@ const Home = (props: Props) => {
 
 const mapStateToProps = ({ dashboard }) => {
   return {
-    count: dashboard.count,
+    count: dashboard.count as CountDashboardType,
     sum: dashboard.sum,
     top: dashboard.top,
   };

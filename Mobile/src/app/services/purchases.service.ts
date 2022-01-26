@@ -2,6 +2,9 @@ import { httpClient } from '../http';
 import { Purchases } from '../models/purchases';
 import { itemPurchaseDTO, PurchasesDTO } from '../models/purchasesDTO';
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import RNFetchBlob from 'rn-fetch-blob';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 const resourceURL = '/purchases';
 
@@ -18,7 +21,6 @@ export const usePurchasesService = () => {
 
   const update = async (purchases: PurchasesDTO): Promise<void> => {
     const url = `${resourceURL}/${purchases.id}`;
-    console.log(url);
     await httpClient.put<Purchases>(url, purchases);
   };
 
@@ -73,14 +75,32 @@ export const usePurchasesService = () => {
     return response.data;
   };
 
-  const loadReportPurchases = async (): Promise<Blob> => {
-    const url = `${resourceURL}/report`;
-    const response: AxiosResponse<Blob> = await httpClient.get(url, { responseType: 'blob' });
-    const bytes = response.data;
-    return new Blob([bytes], { type: 'application/pdf' });
+  const loadReportPurchases = async (): Promise<any> => {
+    const url = `http://192.168.1.10:8080${resourceURL}/report`;
+    const token = await AsyncStorage.getItem('token');
+    const { config, fs } = RNFetchBlob;
+    const downloadDir = fs.dirs.DownloadDir;
+    const options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        overwrite: true,
+        title: 'relatorio.pdf',
+        path: `${downloadDir}/relatorio.pdf`,
+      },
+      appendExt: 'pdf',
+    };
+    return await config(options)
+      .fetch('POST', url, {
+        Authorization: token || '',
+        Accept: 'application/pdf',
+        ContentType: 'application/pdf',
+      })
+      .then((res) => {
+        return res;
+      });
   };
-  
-  
 
   return {
     save,
@@ -89,6 +109,6 @@ export const usePurchasesService = () => {
     deletePurchases,
     loadAllPurchases,
     loadPurchasesDTO,
-	loadReportPurchases,
+    loadReportPurchases,
   };
 };

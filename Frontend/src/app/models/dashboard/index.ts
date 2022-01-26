@@ -3,7 +3,7 @@ export interface PurchasesFromMonth {
   total?: number;
 }
 
-export interface CountDashboard {
+export interface CountDashboardType {
   purchasesCount?: number;
   productCount?: number;
 }

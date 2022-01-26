@@ -110,34 +110,22 @@ class PurchasesForm extends Component<Props> {
     return (
       <Formik
         initialValues={{ ...this.state.purchases }}
-        onSubmit={async (values, { setSubmitting, resetForm }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           if (values.status == 'Em rota') values.status = '1';
           if (values.status == 'Entregue') values.status = '2';
 
-          try {
-            if (values.id == 0) {
-              await this.props.savePurchases(values);
-            } else {
-              await this.props.updatePurchases(values);
+          if (values.id == 0) {
+            if (await this.props.savePurchases(values)) {
+              await AsyncStorage.removeItem('PurchasesList');
+              this.props.navigation.navigate('PurchasesList');
             }
-            resetForm();
-            setSubmitting(false);
-            await AsyncStorage.removeItem('PurchasesList');
-
-            this.props.navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: 'PurchasesList',
-                  },
-                ],
-              }),
-            );
-          } catch (err: any) {
-            setSubmitting(false);
-            this.props.setMessage('Erro', err.message);
+          } else {
+            if (await this.props.updatePurchases(values)) {
+              this.props.navigation.navigate('PurchasesList');
+            }
           }
+
+          setSubmitting(false);
         }}
         validationSchema={validationScheme}
         enableReinitialize
@@ -211,7 +199,7 @@ class PurchasesForm extends Component<Props> {
                 }
                 searchable={false}
               />
-
+              <Line />
               <ItemPurchasesForm
                 product={this.props.product}
                 itemPurchasesSelected={this.state.itemPurchasesSelected}
@@ -232,6 +220,7 @@ class PurchasesForm extends Component<Props> {
                     newItemPurchasesList =
                       newItemPurchasesList.concat(itemPurchasesDTO);
                   } else {
+                    //remove item AsyncStorage
                     newItemPurchasesList = newItemPurchasesList.map((item) => {
                       if (item.id == itemPurchasesDTO.id) {
                         item = itemPurchasesDTO;
@@ -253,16 +242,14 @@ class PurchasesForm extends Component<Props> {
                   );
                   if (this.state.purchases.id == 0) {
                     try {
-                      if (this.state.purchases.id == 0) {
-                        await AsyncStorage.setItem(
-                          'PurchasesList',
-                          JSON.stringify(
-                            this.state.purchases.itemPurchaseDTOList,
-                          ),
-                        );
-                      }
+                      await AsyncStorage.setItem(
+                        'PurchasesList',
+                        JSON.stringify(
+                          this.state.purchases.itemPurchaseDTOList,
+                        ),
+                      );
                     } catch (err) {
-                      console.log(err);
+                      null;
                     }
                   }
                   resetForm();

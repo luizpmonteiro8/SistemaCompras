@@ -47,21 +47,18 @@ class CategoryForm extends Component<Props> {
     return (
       <Formik
         initialValues={{ ...this.state.category }}
-        onSubmit={async (values, { setSubmitting, resetForm }) => {
-          try {
-            if (values.id == 0) {
-              await this.props.saveCategory(values);
-            } else {
-              await this.props.updateCategory(values);
+        onSubmit={async (values, { setSubmitting }) => {
+          if (values.id == 0) {
+            if (await this.props.saveCategory(values)) {
+              this.props.navigation.navigate('CategoryList');
             }
-
-            this.props.navigation.navigate('CategoryList');
-            resetForm();
-            setSubmitting(false);
-          } catch (err: any) {
-            setSubmitting(false);
-            this.props.setMessage('Erro', err.message);
+          } else {
+            if (await this.props.updateCategory(values)) {
+              this.props.navigation.navigate('CategoryList');
+            }
           }
+
+          setSubmitting(false);
         }}
         validationSchema={validationScheme}
         enableReinitialize
@@ -72,7 +69,6 @@ class CategoryForm extends Component<Props> {
           values,
           errors,
           isSubmitting,
-          setValues,
           resetForm,
           touched,
         }) => (
@@ -102,7 +98,7 @@ class CategoryForm extends Component<Props> {
               <Button
                 label="Limpar"
                 onPress={() => {
-                  setValues(initialValues.category);
+                  this.setState({ ...this.state, ...initialValues });
                   resetForm();
                 }}
                 marginLeft={10}
@@ -129,8 +125,6 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    setMessage: (title: string, text: string) =>
-      dispatch(setMessage({ title, text })),
     saveCategory: (category: Category) => dispatch(SaveCategory(category)),
     updateCategory: (category: Category) => dispatch(UpdateCategory(category)),
   };

@@ -29,9 +29,20 @@ const validationScheme = Yup.object().shape({
   name: Yup.string().trim().required('Campo obrigatório.'),
   blocked: Yup.boolean().required('Campo obrigatório.'),
   cnpj: Yup.number()
+    .notRequired()
     .nullable(true)
-    .min(14, 'Minimo de 14 caracteres')
-    .max(14, 'Maximo de 14 caracteres'),
+    .typeError('Campo obrigatório.')
+    .test(
+      'len',
+      'Maximo de 14 caracteres',
+      (val: any) => String(val).length <= 14,
+    )
+    .test(
+      'len',
+      'Mínimo de 14 caracteres',
+      (val: any) =>
+        val == null || String(val) == '' || String(val).length == 14,
+    ),
 });
 
 const initialValues = {
@@ -55,21 +66,17 @@ class MarketForm extends Component<Props> {
     return (
       <Formik
         initialValues={{ ...this.state.market }}
-        onSubmit={async (values, { setSubmitting, resetForm }) => {
-          try {
-            if (values.id == 0) {
-              await this.props.saveMarket(values);
-            } else {
-              await this.props.updateMarket(values);
+        onSubmit={async (values, { setSubmitting }) => {
+          if (values.id == 0) {
+            if (await this.props.saveMarket(values)) {
+              this.props.navigation.navigate('MarketList');
             }
-
-            this.props.navigation.navigate('MarketList');
-            resetForm();
-            setSubmitting(false);
-          } catch (err: any) {
-            setSubmitting(false);
-            this.props.setMessage('Erro', err.message);
+          } else {
+            if (await this.props.updateMarket(values)) {
+              this.props.navigation.navigate('MarketList');
+            }
           }
+          setSubmitting(false);
         }}
         validationSchema={validationScheme}
         enableReinitialize
@@ -80,9 +87,9 @@ class MarketForm extends Component<Props> {
           values,
           errors,
           isSubmitting,
-          setValues,
           touched,
           setFieldValue,
+          resetForm,
         }) => (
           <ScrollView>
             <View style={styles.container}>
@@ -101,6 +108,7 @@ class MarketForm extends Component<Props> {
               />
               <Input
                 label="Cnpj"
+                keyboardType="numeric"
                 value={String(values.cnpj != null ? values.cnpj : '')}
                 onChangeText={handleChange('cnpj')}
                 error={touched.cnpj ? errors.cnpj : ''}
@@ -120,7 +128,10 @@ class MarketForm extends Component<Props> {
 
                 <Button
                   label="Limpar"
-                  onPress={() => setValues(initialValues.market)}
+                  onPress={() => {
+                    this.setState({ ...this.state, ...initialValues });
+                    resetForm();
+                  }}
                   marginLeft={10}
                 />
               </View>

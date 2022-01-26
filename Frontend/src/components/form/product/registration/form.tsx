@@ -16,9 +16,9 @@ export type ProductFormProps = {
 };
 
 const formSchema = {
-  id: '',
+  id: null,
   name: '',
-  quantMin: '',
+  quantMin: null,
   blocked: false,
   categoryId: null,
 };
@@ -37,7 +37,16 @@ export const ProductForm = ({ product, onSubmit, category, isLoading }: ProductF
       <div>
         <div className="row m-2">
           <div className="col-md-12 ">
-            {<Input disabled id="id" name="id" onChange={formik.handleChange} value={formik.values.id} label="Id" />}
+            {
+              <Input
+                disabled
+                id="id"
+                name="id"
+                onChange={formik.handleChange}
+                value={formik.values.id == null ? '' : formik.values.id}
+                label="Id"
+              />
+            }
           </div>
 
           <div className="col-md-12 ">
@@ -75,7 +84,7 @@ export const ProductForm = ({ product, onSubmit, category, isLoading }: ProductF
               min="0.00"
               step="0.001"
               onChange={formik.handleChange}
-              value={formik.values.quantMin}
+              value={formik.values.quantMin == null ? '' : formik.values.quantMin}
               error={formik.touched.quantMin && formik.errors.quantMin ? formik.errors.quantMin : ''}
               label="Quantidade mínima"
             />
@@ -103,6 +112,7 @@ export const ProductForm = ({ product, onSubmit, category, isLoading }: ProductF
                 onClick={() => {
                   route.replace('/cadastros/produtos');
                   formik.resetForm();
+                  formik.setValues({ ...formSchema });
                 }}
                 className="btn btn-danger ms-2"
               >

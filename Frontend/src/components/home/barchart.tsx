@@ -30,6 +30,15 @@ export const BarChart = ({ values }: BarChartProps) => {
         },
       },
     },
+    dataLabels: {
+      formatter: function (value) {
+        return value.toString().replace('.', ',');
+      },
+      style: {
+        fontWeight: 'bold',
+        colors: ['#111', '#555', '#999'],
+      },
+    },
   };
 
   const series = [
@@ -40,8 +49,8 @@ export const BarChart = ({ values }: BarChartProps) => {
   ];
 
   return (
-    <Styled.Wrapper>
-      <div className="card bg-light mx-auto col-md-8 ">
+    <Styled.Barchart>
+      <div className="card bg-light mx-auto col-md-8 " style={{ minWidth: '540px' }}>
         <h4 className="card-header ">Compras por mês - ano: 2021</h4>
         <div className="card-body">
           <div id="chart">
@@ -49,6 +58,6 @@ export const BarChart = ({ values }: BarChartProps) => {
           </div>
         </div>
       </div>
-    </Styled.Wrapper>
+    </Styled.Barchart>
   );
 };

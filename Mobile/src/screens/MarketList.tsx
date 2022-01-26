@@ -50,12 +50,8 @@ class MarketList extends Component<Props> {
           title="Deletar mercado"
           text={` Deseja deletar categoria ${this.state.marketSelectDeleteName}?`}
           onPress={async () => {
-            try {
-              await this.props.deleteMarket(this.state.marketSelectDeleteId);
-              this.setState({ ...this.state, dialogDeleteShow: false });
-            } catch (err: any) {
-              this.props.setMessage('Erro', err.message);
-            }
+            await this.props.deleteMarket(this.state.marketSelectDeleteId);
+            this.setState({ ...this.state, dialogDeleteShow: false });
           }}
         />
 

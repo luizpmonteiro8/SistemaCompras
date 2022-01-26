@@ -10,3 +10,18 @@ export const Wrapper = styled.div`
 
   `}
 `;
+
+export const Card = styled.div`
+  ${({ theme }) => css`
+    display:flex;
+    align-items:center;
+    justify-items: center;
+
+  `}
+`;
+
+export const Form = styled.div`
+  ${({ theme }) => css`
+
+  `}
+`;

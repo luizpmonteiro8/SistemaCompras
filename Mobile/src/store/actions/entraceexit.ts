@@ -8,6 +8,7 @@ import {
   LOAD_ALL_ENTRACEEXIT,
   IS_LOADING_ENTRACEEXIT,
 } from './actionTypes';
+import { setMessage } from './message';
 
 let returnValue = false;
 
@@ -24,11 +25,7 @@ export const SaveEntraceExit = (entraceexit: EntraceExit) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -47,11 +44,7 @@ export const UpdateEntraceExit = (entraceexit: EntraceExit) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -70,11 +63,7 @@ export const DeleteEntraceExit = (id: any) => {
       })
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
     return returnValue;
@@ -90,11 +79,7 @@ export const LoadAllEntraceExit = () => {
       .then((res) => dispatch({ type: LOAD_ALL_ENTRACEEXIT, payload: res }))
       .catch((err) => {
         dispatch(isLoading(false));
-        if (String(err.message).includes('Network Error')) {
-          throw new Error('Não foi possivel conectar com servidor.');
-        } else {
-          throw new Error(err.response.data.message);
-        }
+        dispatch(setMessage(setError(err)));
       });
     dispatch(isLoading(false));
   };
@@ -103,3 +88,17 @@ export const LoadAllEntraceExit = () => {
 const isLoading = (value: boolean) => {
   return { type: IS_LOADING_ENTRACEEXIT, payload: value };
 };
+
+function setError(err: any) {
+  if (String(err.message).includes('Network Error')) {
+    return {
+      title: 'Erro',
+      text: 'Não foi possivel conectar com servidor.',
+    };
+  } else {
+    return {
+      title: 'Erro',
+      text: err.response.data.message,
+    };
+  }
+}

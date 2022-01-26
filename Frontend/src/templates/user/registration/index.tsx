@@ -1,7 +1,6 @@
 import { UserRegistration } from 'components';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Base } from '../../base';
 import * as Styled from './styles';
 
 export const UserRegistationTp = () => {

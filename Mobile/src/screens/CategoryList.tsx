@@ -50,14 +50,8 @@ class CategoryList extends Component<Props> {
           title="Deletar categoria"
           text={`Deseja deletar categoria ${this.state.categorySelectDeleteName}?`}
           onPress={async () => {
-            try {
-              await this.props.deleteCategory(
-                this.state.categorySelectDeleteId,
-              );
-              this.setState({ ...this.state, dialogDeleteShow: false });
-            } catch (err: any) {
-              this.props.setMessage('Erro', err.message);
-            }
+            this.setState({ ...this.state, dialogDeleteShow: false });
+            await this.props.deleteCategory(this.state.categorySelectDeleteId);
           }}
         />
 
@@ -82,7 +76,7 @@ class CategoryList extends Component<Props> {
                               index: 0,
                               routes: [
                                 {
-                                  name: 'CateforyForm',
+                                  name: 'CategoryForm',
                                   params: { category: category },
                                 },
                               ],

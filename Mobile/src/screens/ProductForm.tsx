@@ -18,7 +18,6 @@ import * as Yup from 'yup';
 import { Input } from './../components/common/input/index';
 import { CheckBox } from './../components/common/checkbox';
 import { Button } from './../components/common/button/index';
-import { CommonActions } from '@react-navigation/native';
 
 interface Props extends PropsFromRedux {
   navigation: {
@@ -70,30 +69,17 @@ class ProductForm extends Component<Props> {
     return (
       <Formik
         initialValues={{ ...this.state.product }}
-        onSubmit={async (values, { setSubmitting, resetForm }) => {
-          try {
-            if (values.id == 0) {
-              await this.props.saveProduct(values);
-            } else {
-              await this.props.updateProduct(values);
+        onSubmit={async (values, { setSubmitting }) => {
+          if (values.id == 0) {
+            if (await this.props.saveProduct(values)) {
+              this.props.navigation.navigate('ProductList');
             }
-
-            this.props.navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: 'ProductList',
-                  },
-                ],
-              }),
-            );
-            resetForm();
-            setSubmitting(false);
-          } catch (err: any) {
-            setSubmitting(false);
-            this.props.setMessage('Erro', err.message);
+          } else {
+            if (await this.props.updateProduct(values)) {
+              this.props.navigation.navigate('ProductList');
+            }
           }
+          setSubmitting(false);
         }}
         validationSchema={validationScheme}
         enableReinitialize
@@ -104,7 +90,6 @@ class ProductForm extends Component<Props> {
           values,
           errors,
           setFieldValue,
-          setValues,
           touched,
           resetForm,
         }) => (
@@ -162,7 +147,7 @@ class ProductForm extends Component<Props> {
                 <Button
                   label="Limpar"
                   onPress={() => {
-                    setValues(initialValues.product);
+                    this.setState({ ...this.state, ...initialValues });
                     resetForm();
                   }}
                   marginLeft={10}
