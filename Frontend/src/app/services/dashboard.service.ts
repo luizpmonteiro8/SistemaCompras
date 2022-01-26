@@ -2,14 +2,14 @@ import { httpClient } from '../http';
 import { AxiosResponse } from 'axios';
 import { Stock } from './../models/stock';
 import { PurchasesFromMonth } from './../models/dashboard/index';
-import { CountDashboard } from './../models/dashboard/index';
+import { CountDashboardType } from './../models/dashboard/index';
 
 const resourceURL = '/dashboard';
 
 export const useDashboardService = () => {
-  const count = async (): Promise<CountDashboard> => {
+  const count = async (): Promise<CountDashboardType> => {
     const url = `${resourceURL}/count`;
-    const response: AxiosResponse<CountDashboard> = await httpClient.get<CountDashboard>(url);
+    const response: AxiosResponse<CountDashboardType> = await httpClient.get<CountDashboardType>(url);
     return response.data;
   };
 
