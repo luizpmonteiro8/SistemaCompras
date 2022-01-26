@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { COUNT_DASHBOARD, SUM_DASHBOARD, TOP_DASHBOARD, IS_LOADING_DASHBOARD } from '../actions/actionTypes';
-import { CountDashboard, SumDashboard } from 'app/models/dashboard';
+import { CountDashboardType, SumDashboard } from 'app/models/dashboard';
 import { Stock } from 'app/models/stock';
 
 const initialState = {
-  count: {} as CountDashboard,
+  count: {} as CountDashboardType,
   sum: [] as SumDashboard[],
   top: [] as Stock[],
   isLoading: false,
