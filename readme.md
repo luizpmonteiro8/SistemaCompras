@@ -23,7 +23,7 @@
 
 Sistema de compras
 
-Este artigo descreve um sistema de gerenciamento de compras domestica onde é possível efetuar cadastro das compras do mercado e fazer o controle do estoque dos produtos. Abordando também o desenvolvimento do sistema em etapas contendo, diagrama de classes, modelagem de banco de dados, tecnologias utilizadas, principais telas do sistema, configurações para melhoria e teste automatizados.
+Este artigo descreve um sistema de gerenciamento de compras doméstica onde é possível efetuar cadastro das compras do mercado e fazer o controle de estoque dos produtos. Abordando também o desenvolvimento do sistema em etapas contendo, diagrama de classes, modelagem de banco de dados, tecnologias utilizadas, principais telas do sistema, configurações para melhoria e testes automatizados.
 
 Backend:  roda no heroku. <a href="https://appcomprasluiz.herokuapp.com" target="_blank">https://appcomprasluiz.herokuapp.com</a><br>
 Frontend: rodando no vercel. <a href=" https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app" target="_blank"> https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app</a> <br>
@@ -152,7 +152,7 @@ O sistema trabalha com cadastro de: mercados, categorias, produtos, entrada/saí
 
 **Mercado:**
 
-No cadastro de mercado é necessário informa o nome do local como campo obrigatório, também pode ser informado o cnpj e bloquear para não aparecer na lista quando for ser listado. Na versão web a lista de mercados cadastrados aparece e também permite a alteração e deletar o mercado. 
+No cadastro de mercado é necessário informar o nome do local como campo obrigatório, também pode ser informado o cnpj e bloquear para não aparecer na lista quando for ser listado. Na versão web a lista de mercados cadastrados aparece e também permite a alteração e deletar o mercado. 
 
 <a href="https://uploaddeimagens.com.br/images/003/649/072/original/06-_cadastro_de_mercado.png?1643259716">
 <img src="https://uploaddeimagens.com.br/images/003/649/072/original/06-_cadastro_de_mercado.png?1643259716" alt="cadastro de mercado" title="Clique para ampliar" />
@@ -163,7 +163,7 @@ No cadastro de mercado é necessário informa o nome do local como campo obrigat
 
 **Categoria:**
 
-No cadastro de categoria é necessário informa o nome da categoria como campo obrigatório. Na versão web a lista de categorias cadastrada aparece e também permite a alteração e deletar.
+No cadastro da categoria é necessário informa o nome da categoria como campo obrigatório. Na versão web a lista de categorias cadastrada aparece e também permite a alteração e deletar.
 <a href="https://uploaddeimagens.com.br/images/003/649/073/original/Sem_07-_cadastro_de_categoria.png?1643260336">
 <img src="https://uploaddeimagens.com.br/images/003/649/073/original/Sem_07-_cadastro_de_categoria.png?1643260336" alt="cadastro de categoria" title="Clique para ampliar" />
  <p align="center">
@@ -175,7 +175,7 @@ No cadastro de categoria é necessário informa o nome da categoria como campo o
 
 **Produtos:**
 
-No cadastro de produtos é necessário informa a categoria do produto, nome, quantidade mínima e se o produto está bloqueado. A categoria aparece e uma lista onde só é possível escolher uma. Na versão web a lista de produtos cadastrado aparece e também permite a alteração e deletar.
+No cadastro de produtos é necessário informa a categoria do produto, nome, quantidade mínima e se o produto está bloqueado. A categoria aparece é uma lista onde só é possível escolher uma. Na versão web a lista de produtos cadastrado aparece e também permite a alteração e deletar.
 <a href="https://uploaddeimagens.com.br/images/003/649/077/original/08-cadastro_de_produto.png?1643260765">
 <img src="https://uploaddeimagens.com.br/images/003/649/077/original/08-cadastro_de_produto.png?1643260765" alt="cadastro de produto" title="Clique para ampliar" />
  <p align="center">
@@ -185,7 +185,7 @@ No cadastro de produtos é necessário informa a categoria do produto, nome, qua
 
 **Compras:**
 
-No cadastro de compras, deve informa mercado, data e o status da compra e também gerar a lista de item da compra.
+No cadastro de compras, deve ser informado mercado, data e o status da compra e também gerar a lista de item da compra.
 
 Deve escolher um produto, quantidade, preço e opcionalmente a validade para cadastra um item na lista de compras. A opção de categoria serve para facilitar filtrando os produtos.
 
@@ -210,7 +210,7 @@ Quando a compra é finalizada é enviado um email, onde mostra a lista de item d
 
 **Entrada/saída:**
 
-No cadastro de entrada/saída, o usuário pode adicionar produtos que já tem em estoque, também informa os produtos que estão utilizados com a saída dos produtos. Caso a retirada do produto seja maior que a quantidade em estoque, deve mostrar um erro na tela informando a quantidade de produto em estoque.
+No cadastro de entrada/saída, o usuário pode adicionar produtos que já tem em estoque, também informar os produtos que estão utilizados com a saída dos produtos. Caso a retirada do produto seja maior que a quantidade em estoque, deve mostrar um erro na tela informando a quantidade de produto em estoque.
 <a href="https://uploaddeimagens.com.br/images/003/649/081/original/10-_cadastro_entrada_e_saida.png?1643262559">
 <img src="https://uploaddeimagens.com.br/images/003/649/081/original/10-_cadastro_entrada_e_saida.png?1643262559" alt="cadastro de entra saida" title="Clique para ampliar" />
  <p align="center">
@@ -222,11 +222,11 @@ No cadastro de entrada/saída, o usuário pode adicionar produtos que já tem em
 
 **Listas na versão mobile:**
 
-Na versão web em todas as telas menos no cadastro de compras a lista de item cadastrada é mostrado junto com o cadastro, na versão mobile as listas ficam separadas.
+Na versão web em todas as telas menos no cadastro de compras a lista de itens cadastrado é mostrado junto com o cadastro, na versão mobile as listas ficam separadas.
 
-Todas as listas da versão mobile tem a opção de alterar e deletar os item, no caso da compras só e possível alterar se ainda estiver com status em rota.
+Todas as listas da versão mobile tem a opção de alterar e deletar os itens, no caso das compras só e possível alterar se ainda estiver com status em rota.
 
-Também possui a opção de lista compras em formato pdf.
+Também possui a opção de listar as compras em formato pdf.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/082/original/11-_listas_mobile.png?1643263600">
 <img src="https://uploaddeimagens.com.br/images/003/649/082/original/11-_listas_mobile.png?1643263600" alt="lista" title="Clique para ampliar" />
@@ -243,7 +243,7 @@ Na lista de estoque é possível visualizar categoria, produto, quantidade e se 
 
 Na lista de compras é possível visualizar data, mercado, status, total, botão para alterar ou visualizar e deletar.
 
-Na opção para compras em pdf, ao clicar ele carrega o arquivo em pdf, onde tem um relatório de todas as compras cadastrada no sistema.
+Na opção para compras em pdf, ao clicar ele carrega o arquivo em pdf, onde tem um relatório de todas as compras cadastradas no sistema.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/089/original/13-_relatorio_de_estoque.png?1643264479">
 <img src="https://uploaddeimagens.com.br/images/003/649/089/original/13-_relatorio_de_estoque.png?1643264479" alt="relatorio de estoque" title="Clique para ampliar" />
@@ -270,7 +270,7 @@ Na opção para compras em pdf, ao clicar ele carrega o arquivo em pdf, onde tem
 
 **Login:**
 
-Caso o servidor de backend, ainda esteja inicializado será informado ao usuário através de uma mensagem. Digitando email ou senha invalido deve mostrar um erro na tela.
+Caso o servidor de backend, ainda esteja inicializado será informado ao usuário através de uma mensagem. Digitando email ou senha inválido deve mostrar um erro na tela.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/092/original/imagem_2022-01-27_032534.png?1643264920">
 <img src="https://uploaddeimagens.com.br/images/003/649/092/original/imagem_2022-01-27_032534.png?1643264920" alt="mensagem de espera ao logar" title="Clique para ampliar" />
