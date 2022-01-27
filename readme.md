@@ -4,11 +4,16 @@
 [Introdução](https://github.com/luizpmonteiro8/SistemaCompras#introducao)
 
 [1.Diagrama E-R - Modelo de banco de dados ](https://github.com/luizpmonteiro8/SistemaCompras#1-diagrama-e-r---modelo-de-banco-de-dados)
+
 [2.Diagrama de Classe](https://github.com/luizpmonteiro8/SistemaCompras#2-diagrama-de-classe)
+
 [3.Tecnologia utilizadas](https://github.com/luizpmonteiro8/SistemaCompras#3-tecnologias-utilizadas)
+
 [4. Interface do sistema](https://github.com/luizpmonteiro8/SistemaCompras#4-interface-do-sistema)
-[5. Informações adicionais](https://github.com/luizpmonteiro8/SistemaCompras#5-informacoes-adicionais)
-[6.Conclusão](https://github.com/luizpmonteiro8/SistemaCompras#6-conclusao)
+
+[5. Informações adicionais](https://github.com/luizpmonteiro8/SistemaCompras#5-informa%C3%A7%C3%B5es-adicionais)
+
+[6.Conclusão](https://github.com/luizpmonteiro8/SistemaCompras#6-conclus%C3%A3o)
 
 
 
@@ -314,6 +319,7 @@ Sempre que ocorre um cadastro ou alteração será informando o sucesso para usu
   </a>
   
 **Campos obrigatório**
+
 Todos os cadastro possui controle de campos obrigatório onde o usuário não tem permissão de salva o cadastro até que todos campos estejam preenchidos, como mostra a figura abaixo.
 Essa mensagem de erro é mostrada quando é clicado no botão para salvar o formulário.
 
@@ -325,6 +331,7 @@ Essa mensagem de erro é mostrada quando é clicado no botão para salvar o form
   </a>
 
 **Valores inválidos**
+
 Todos os campos são validos quando é feito o envio do formulário, é feito uma verificação do tipo da informação, também os campos tem bloqueio por exemplo, na versão web se digitar letras onde deve colocar preço de compra, não vai ter entrada de valor, na versão mobile aparece apenas o teclado numérico como figura abaixo.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/107/original/19-_teclado_numerico.png?1643271304">
