@@ -1,23 +1,27 @@
 ## Índice
 
- - Introdução
- - 1. Diagrama E-R - Modelo de banco de dados 
- - 2. Diagrama de Classe
- - 3. Tecnologia utilizadas
+
+[Introdução](https://github.com/luizpmonteiro8/SistemaCompras#introducao)
+
+[1.Diagrama E-R - Modelo de banco de dados ](https://github.com/luizpmonteiro8/SistemaCompras#1-diagrama-e-r---modelo-de-banco-de-dados)
+[2.Diagrama de Classe](https://github.com/luizpmonteiro8/SistemaCompras#2-diagrama-de-classe)
+[3.Tecnologia utilizadas](https://github.com/luizpmonteiro8/SistemaCompras#3-tecnologias-utilizadas)
+[4. Interface do sistema](https://github.com/luizpmonteiro8/SistemaCompras#4-interface-do-sistema)
+[5. Informações adicionais](https://github.com/luizpmonteiro8/SistemaCompras#5-informacoes-adicionais)
+[6.Conclusão](https://github.com/luizpmonteiro8/SistemaCompras#6-conclusao)
 
 
 
-
-**Introdução:**
+### Introdução:
 
 Sistema de compras
 Este artigo descreve um sistema de gerenciamento de compras domestica onde é possível efetuar cadastro das compras do mercado e fazer o controle do estoque dos produtos. Abordando também o desenvolvimento do sistema em etapas contendo, diagrama de classes, modelagem de banco de dados, tecnologias utilizadas, principais telas do sistema e as camada de segurança do sistema.
 
-Backend:  roda no heroku. [https://appcomprasluiz.herokuapp.com/](https://appcomprasluiz.herokuapp.com/)
-Frontend: rodando no vercel. https://vercel.com/luizpmonteiro8/sistema-compras/67KKMSALEzwDLARUZvjKgnQYR19w
+Backend:  roda no heroku. [https://appcomprasluiz.herokuapp.com/](https://appcomprasluiz.herokuapp.com/)<br>
+Frontend: rodando no vercel. https://vercel.com/luizpmonteiro8/sistema-compras/67KKMSALEzwDLARUZvjKgnQYR19w<br>
 Banco de dados: Postgre no heroku.
 
-### Diagrama E-R - Modelo de banco de dados
+### 1. Diagrama E-R - Modelo de banco de dados
 A **figura 1** representa graficamente as entidades e seus relacionamentos com as de mais entidades do banco de dados.
 <a href="https://uploaddeimagens.com.br/images/003/649/036/original/er.png?1643253674">
 <img src="https://uploaddeimagens.com.br/images/003/649/036/original/er.png?1643253674" alt="Diagrama ER" title="Clique para ampliar" />
@@ -35,7 +39,7 @@ A  **figura 2**  descreve a estrutura do sistema modelando suas classes descreve
   </p>
    </a>
 
-### 3.Tecnologias Utilizadas
+### 3. Tecnologias Utilizadas
 
 **Backend:**
 
@@ -308,16 +312,27 @@ Sempre que ocorre um cadastro ou alteração será informando o sucesso para usu
     <b>**Figura 22- Mensagem ao salvar com sucesso.**</b>
   </p>  
   </a>
+  
+**Campos obrigatório**
+Todos os cadastro possui controle de campos obrigatório onde o usuário não tem permissão de salva o cadastro até que todos campos estejam preenchidos, como mostra a figura abaixo.
+Essa mensagem de erro é mostrada quando é clicado no botão para salvar o formulário.
 
+<a href="https://uploaddeimagens.com.br/images/003/649/106/original/18-_campo_obrigatorio.png?1643270494">
+<img src="https://uploaddeimagens.com.br/images/003/649/106/original/18-_campo_obrigatorio.png?1643270494" alt="campo obrigatorio" title="Clique para ampliar" />
+ <p align="center">
+    <b>**Figura 23- Campo obrigatório**</b>
+  </p>  
+  </a>
 
+**Valores inválidos**
+Todos os campos são validos quando é feito o envio do formulário, é feito uma verificação do tipo da informação, também os campos tem bloqueio por exemplo, na versão web se digitar letras onde deve colocar preço de compra, não vai ter entrada de valor, na versão mobile aparece apenas o teclado numérico como figura abaixo.
 
+<a href="https://uploaddeimagens.com.br/images/003/649/107/original/19-_teclado_numerico.png?1643271304">
+<img src="https://uploaddeimagens.com.br/images/003/649/107/original/19-_teclado_numerico.png?1643271304" alt="teclado numerico" title="Clique para ampliar" />
+ <p align="center">
+    <b>**Figura 24- Teclado numérico**</b>
+  </p>  
+  </a>
 
-
-
-
-
-
- 
-
-
-
+### 6. Conclusão
+Sistema básico para controle de compras domésticos, criado com intuito de demostrar meus conhecimentos na área de desenvolvimento de software. 
