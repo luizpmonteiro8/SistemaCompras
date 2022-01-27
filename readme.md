@@ -341,7 +341,7 @@ Sempre que ocorre um cadastro ou alteração será informando o sucesso para usu
   
 **Campos obrigatórios**
 
-Todos os cadastros possuem controle de campos obrigatório onde o usuário não tem permissão de salva o cadastro até que todos campos estejam preenchidos, como mostra a figura abaixo.
+Todos os cadastros possuem controle de campos obrigatórios onde o usuário não tem permissão de salva o cadastro até que todos campos estejam preenchidos, como mostra a figura abaixo.
 Essa mensagem de erro é mostrada quando é clicado no botão para salvar o formulário.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/106/original/18-_campo_obrigatorio.png?1643270494">
@@ -353,7 +353,7 @@ Essa mensagem de erro é mostrada quando é clicado no botão para salvar o form
 
 **Valores inválidos**
 
-Todos os campos são validos quando é feito o envio do formulário, é feito uma verificação do tipo da informação, também os campos têm bloqueio por exemplo, na versão web se digitar letras onde deve colocar preço de compra, não vai ter entrada de valor, na versão mobile aparece apenas o teclado numérico como figura abaixo.
+Todos os campos são validados quando é feito o envio do formulário, é feito uma verificação do tipo da informação, também os campos têm bloqueio por exemplo, na versão web se digitar letras onde deve colocar preço de compra, não vai ter entrada de valor, na versão mobile aparece apenas o teclado numérico como figura abaixo.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/107/original/19-_teclado_numerico.png?1643271304">
 <img src="https://uploaddeimagens.com.br/images/003/649/107/original/19-_teclado_numerico.png?1643271304" alt="teclado numerico" title="Clique para ampliar" />
@@ -363,7 +363,7 @@ Todos os campos são validos quando é feito o envio do formulário, é feito um
   </a>
 
 ### 6. Conclusão
-Sistema básico para controle de compras domésticos, criado com intuito de demostrar meus conhecimentos na área de desenvolvimento de software. 
+Sistema básico para controle de compras domésticos, criado com intuito de demonstrar meus conhecimentos na área de desenvolvimento de software. 
 
 ### Extra
 
