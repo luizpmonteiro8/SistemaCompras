@@ -22,7 +22,8 @@
 ### Introdução:
 
 Sistema de compras
-Este artigo descreve um sistema de gerenciamento de compras domestica onde é possível efetuar cadastro das compras do mercado e fazer o controle do estoque dos produtos. Abordando também o desenvolvimento do sistema em etapas contendo, diagrama de classes, modelagem de banco de dados, tecnologias utilizadas, principais telas do sistema e as camada de segurança do sistema.
+
+Este artigo descreve um sistema de gerenciamento de compras domestica onde é possível efetuar cadastro das compras do mercado e fazer o controle do estoque dos produtos. Abordando também o desenvolvimento do sistema em etapas contendo, diagrama de classes, modelagem de banco de dados, tecnologias utilizadas, principais telas do sistema, configurações para melhoria e teste automatizados.
 
 Backend:  roda no heroku. <a href="https://appcomprasluiz.herokuapp.com" target="_blank">https://appcomprasluiz.herokuapp.com</a><br>
 Frontend: rodando no vercel. <a href=" https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app" target="_blank"> https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app</a> <br>
@@ -190,7 +191,7 @@ Deve escolher um produto, quantidade, preço e opcionalmente a validade para cad
 
 Produtos adicionado na compra fica salvo em cookie, onde o usuário pode fechar o site ou aplicativo e depois quando retorna a lista ainda está como antes. Quando é feito a alteração de uma compra cadastrada (permitido apenas compras com status em rota) é possível adicionar item a compra sem fazer alteração com produtos cadastrados em cookie.
 
-Quando a compra é finalizada é enviado um email, onde mostra a lista de item da compras como na figura abaixo.
+Quando a compra é finalizada é enviado um email, onde mostra a lista de item da compra como na figura abaixo.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/078/original/09-cadastro_de_compras.png?1643261308">
 <img src="https://uploaddeimagens.com.br/images/003/649/078/original/09-cadastro_de_compras.png?1643261308" alt="cadastro de compra" title="Clique para ampliar" />
@@ -340,7 +341,7 @@ Sempre que ocorre um cadastro ou alteração será informando o sucesso para usu
   
 **Campos obrigatórios**
 
-Todos os cadastro possui controle de campos obrigatório onde o usuário não tem permissão de salva o cadastro até que todos campos estejam preenchidos, como mostra a figura abaixo.
+Todos os cadastros possuem controle de campos obrigatório onde o usuário não tem permissão de salva o cadastro até que todos campos estejam preenchidos, como mostra a figura abaixo.
 Essa mensagem de erro é mostrada quando é clicado no botão para salvar o formulário.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/106/original/18-_campo_obrigatorio.png?1643270494">
@@ -352,7 +353,7 @@ Essa mensagem de erro é mostrada quando é clicado no botão para salvar o form
 
 **Valores inválidos**
 
-Todos os campos são validos quando é feito o envio do formulário, é feito uma verificação do tipo da informação, também os campos tem bloqueio por exemplo, na versão web se digitar letras onde deve colocar preço de compra, não vai ter entrada de valor, na versão mobile aparece apenas o teclado numérico como figura abaixo.
+Todos os campos são validos quando é feito o envio do formulário, é feito uma verificação do tipo da informação, também os campos têm bloqueio por exemplo, na versão web se digitar letras onde deve colocar preço de compra, não vai ter entrada de valor, na versão mobile aparece apenas o teclado numérico como figura abaixo.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/107/original/19-_teclado_numerico.png?1643271304">
 <img src="https://uploaddeimagens.com.br/images/003/649/107/original/19-_teclado_numerico.png?1643271304" alt="teclado numerico" title="Clique para ampliar" />
