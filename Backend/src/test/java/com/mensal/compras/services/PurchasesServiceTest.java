@@ -15,13 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,7 +68,10 @@ public class PurchasesServiceTest {
 
 	@Mock
 	HttpServletRequest request;
-
+	
+	@Mock
+	EmailService emailService;
+	
 	@InjectMocks
 	PurchasesService service;
 
@@ -76,6 +83,7 @@ public class PurchasesServiceTest {
 		Purchases purchasesSaved = PurchasesRepositoryTest.createPurchases();
 		purchasesSaved.setId(1L);
 		when(repository.save(purchasesToSave)).thenReturn(purchasesSaved);
+		doNothing().when(emailService).sendOrderConfirmationHtmlEmail(any(Purchases.class));
 
 		// action
 		Purchases purchases = service.insert(purchasesToSave);
@@ -107,7 +115,6 @@ public class PurchasesServiceTest {
 		// scenario
 		Purchases purchasesToSave = PurchasesRepositoryTest.createPurchases();
 		purchasesToSave.setId(1l);
-
 		//doThrow(new DataIntegrityViolationException("Venda não encontrado! Id: 1")).when(repository).findById(1l);
 
 		// execution
@@ -240,6 +247,25 @@ public class PurchasesServiceTest {
 		// verification
 		assertThat(result).isInstanceOf(Purchases.class);
 
+	}
+	
+	@Test
+	public void shouldThrowErrorWhenTryingtoSendEmail() {
+		// scenario
+		Purchases purchasesToSave = PurchasesRepositoryTest.createPurchases();
+
+		Purchases purchasesSaved = PurchasesRepositoryTest.createPurchases();
+		purchasesSaved.setId(1L);
+		when(repository.save(purchasesToSave)).thenReturn(purchasesSaved);
+		doThrow(DataIntegrityViolationException.class).when(emailService).sendOrderConfirmationHtmlEmail(purchasesToSave);
+
+		// action
+		DataIntegrityViolationException result = catchThrowableOfType(() -> service.insert(purchasesToSave), DataIntegrityViolationException.class);
+
+
+		// verification
+		//assertThat(result.getMessage()).isEqualTo("Não é possível excluir a venda!");
+		assertThat(result).isNull();
 	}
 
 }

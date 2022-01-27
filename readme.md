@@ -1,7 +1,7 @@
 ## Índice
 
 
-[Introdução](https://github.com/luizpmonteiro8/SistemaCompras#introducao)
+[Introdução](https://github.com/luizpmonteiro8/SistemaCompras#introdu%C3%A7%C3%A3o)
 
 [1.Diagrama E-R - Modelo de banco de dados ](https://github.com/luizpmonteiro8/SistemaCompras#1-diagrama-e-r---modelo-de-banco-de-dados)
 
@@ -15,6 +15,8 @@
 
 [6.Conclusão](https://github.com/luizpmonteiro8/SistemaCompras#6-conclus%C3%A3o)
 
+[7.Extra](https://github.com/luizpmonteiro8/SistemaCompras#extra)
+
 
 
 ### Introdução:
@@ -22,12 +24,12 @@
 Sistema de compras
 Este artigo descreve um sistema de gerenciamento de compras domestica onde é possível efetuar cadastro das compras do mercado e fazer o controle do estoque dos produtos. Abordando também o desenvolvimento do sistema em etapas contendo, diagrama de classes, modelagem de banco de dados, tecnologias utilizadas, principais telas do sistema e as camada de segurança do sistema.
 
-Backend:  roda no heroku. [https://appcomprasluiz.herokuapp.com/](https://appcomprasluiz.herokuapp.com/)<br>
-Frontend: rodando no vercel. https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app <br>
+Backend:  roda no heroku. <a href="https://appcomprasluiz.herokuapp.com" target="_blank">https://appcomprasluiz.herokuapp.com</a><br>
+Frontend: rodando no vercel. <a href=" https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app" target="_blank"> https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app</a> <br>
 Banco de dados: Postgre no heroku.
 
 ### 1. Diagrama E-R - Modelo de banco de dados
-A **figura 1** representa graficamente as entidades e seus relacionamentos com as de mais entidades do banco de dados.
+A **figura 1** representa graficamente as entidades e seus relacionamentos com as demais entidades do banco de dados.
 <a href="https://uploaddeimagens.com.br/images/003/649/036/original/er.png?1643253674">
 <img src="https://uploaddeimagens.com.br/images/003/649/036/original/er.png?1643253674" alt="Diagrama ER" title="Clique para ampliar" />
   <p align="center">
@@ -187,12 +189,23 @@ No cadastro de compras, deve informa mercado, data e o status da compra e també
 Deve escolher um produto, quantidade, preço e opcionalmente a validade para cadastra um item na lista de compras. A opção de categoria serve para facilitar filtrando os produtos.
 
 Produtos adicionado na compra fica salvo em cookie, onde o usuário pode fechar o site ou aplicativo e depois quando retorna a lista ainda está como antes. Quando é feito a alteração de uma compra cadastrada (permitido apenas compras com status em rota) é possível adicionar item a compra sem fazer alteração com produtos cadastrados em cookie.
+
+Quando a compra é finalizada é enviado um email, onde mostra a lista de item da compras como na figura abaixo.
+
 <a href="https://uploaddeimagens.com.br/images/003/649/078/original/09-cadastro_de_compras.png?1643261308">
 <img src="https://uploaddeimagens.com.br/images/003/649/078/original/09-cadastro_de_compras.png?1643261308" alt="cadastro de compra" title="Clique para ampliar" />
  <p align="center">
     <b>**Figura 11 -Cadastro de compra**</b>
   </p>  
   </a>
+
+<a href="https://uploaddeimagens.com.br/images/003/649/135/original/23-_email_confirmacao_compra.png?1643280211">
+<img src="https://uploaddeimagens.com.br/images/003/649/135/original/23-_email_confirmacao_compra.png?1643280211" alt="email de compra" title="Clique para ampliar" />
+ <p align="center">
+    <b>**Figura 11.1 -Email confirmando cadastro de compras**</b>
+  </p>  
+  </a>
+
 
 **Entrada/saída:**
 
@@ -274,12 +287,19 @@ Caso o servidor de backend, ainda esteja inicializado será informado ao usuári
 
 **Recuperar senha:**
 
-Só é permitido recuperar senha de usuário cadastrado, por exemplo o usuário teste, não pode ter sua senha recuperada, por padrão fica senha 12345678. Na versão mobile é utilizado o campo de email do login.
+Só é permitido recuperar senha de usuário cadastrado, por exemplo o usuário teste, não pode ter sua senha recuperada, por padrão fica senha 12345678. Na versão mobile é utilizado o campo de email do login. Ao solicitar nova senha é enviado um email com uma senha aleatória de 10 dígitos.
 
 <a href="https://uploaddeimagens.com.br/images/003/649/101/original/14-tela_de_recuperar_senha.png?1643265945">
 <img src="https://uploaddeimagens.com.br/images/003/649/101/original/14-tela_de_recuperar_senha.png?1643265945" alt="tela de recuperar senha" title="Clique para ampliar" />
  <p align="center">
     <b>**Figura 19- Tela de recuperar senha.**</b>
+  </p>  
+  </a>
+
+<a href="https://uploaddeimagens.com.br/images/003/649/136/original/22-_recuperacao_de_senha.png?1643280303">
+<img src="https://uploaddeimagens.com.br/images/003/649/136/original/22-_recuperacao_de_senha.png?1643280303" alt="email com a nova senha" title="Clique para ampliar" />
+ <p align="center">
+    <b>**Figura 19.1- Email com a nova senha**</b>
   </p>  
   </a>
 
@@ -343,3 +363,29 @@ Todos os campos são validos quando é feito o envio do formulário, é feito um
 
 ### 6. Conclusão
 Sistema básico para controle de compras domésticos, criado com intuito de demostrar meus conhecimentos na área de desenvolvimento de software. 
+
+### Extra
+
+**Teste realizado no backend(junit 5):**
+
+Foi realizado teste na classe de services, repository e controller do tipo Purchases. Todos os teste foram 100% de cobertura como mostra a figura 25.
+
+<a href="https://uploaddeimagens.com.br/images/003/649/129/original/20-_testes.png?1643278007">
+<img src="https://uploaddeimagens.com.br/images/003/649/129/original/20-_testes.png?1643278007" alt="teste realizado junit" title="Clique para ampliar" />
+ <p align="center">
+    <b>**Figura 25- Teste realizado no junit**</b>
+  </p>  
+  </a>
+
+**Teste realizado no frontend(jest):**
+
+Para o frontend foi feito teste no redux, redux-thunk, formulário de cadastro de categoria e lista de categoria, todos em 100% de cobertura.
+
+<a href="https://uploaddeimagens.com.br/images/003/649/130/full/21-teste_jest.png?1643278218">
+<img src="https://uploaddeimagens.com.br/images/003/649/130/full/21-teste_jest.png?1643278218" alt="teste realizado jest" title="Clique para ampliar" />
+ <p align="center">
+    <b>**Figura 26- Teste realizado no jest**</b>
+  </p>  
+  </a>
+
+
