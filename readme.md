@@ -338,7 +338,7 @@ Sempre que ocorre um cadastro ou alteração será informando o sucesso para usu
   </p>  
   </a>
   
-**Campos obrigatório**
+**Campos obrigatórios**
 
 Todos os cadastro possui controle de campos obrigatório onde o usuário não tem permissão de salva o cadastro até que todos campos estejam preenchidos, como mostra a figura abaixo.
 Essa mensagem de erro é mostrada quando é clicado no botão para salvar o formulário.
@@ -346,7 +346,7 @@ Essa mensagem de erro é mostrada quando é clicado no botão para salvar o form
 <a href="https://uploaddeimagens.com.br/images/003/649/106/original/18-_campo_obrigatorio.png?1643270494">
 <img src="https://uploaddeimagens.com.br/images/003/649/106/original/18-_campo_obrigatorio.png?1643270494" alt="campo obrigatorio" title="Clique para ampliar" />
  <p align="center">
-    <b>**Figura 23- Campo obrigatório**</b>
+    <b>**Figura 23- Campo obrigatórios**</b>
   </p>  
   </a>
 
