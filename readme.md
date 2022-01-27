@@ -23,7 +23,7 @@ Sistema de compras
 Este artigo descreve um sistema de gerenciamento de compras domestica onde é possível efetuar cadastro das compras do mercado e fazer o controle do estoque dos produtos. Abordando também o desenvolvimento do sistema em etapas contendo, diagrama de classes, modelagem de banco de dados, tecnologias utilizadas, principais telas do sistema e as camada de segurança do sistema.
 
 Backend:  roda no heroku. [https://appcomprasluiz.herokuapp.com/](https://appcomprasluiz.herokuapp.com/)<br>
-Frontend: rodando no vercel. https://vercel.com/luizpmonteiro8/sistema-compras/67KKMSALEzwDLARUZvjKgnQYR19w<br>
+Frontend: rodando no vercel. https://sistema-compras-om8ie1vko-luizpmonteiro8.vercel.app <br>
 Banco de dados: Postgre no heroku.
 
 ### 1. Diagrama E-R - Modelo de banco de dados
