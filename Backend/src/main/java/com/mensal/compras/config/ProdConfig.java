@@ -34,7 +34,7 @@ import com.mensal.compras.repositories.StockRepository;
 import com.mensal.compras.repositories.UserRepository;
 
 @Configuration
-@Profile("dev")
+@Profile("prod")
 public class ProdConfig implements CommandLineRunner {
 
 	private static final Long Long = null;

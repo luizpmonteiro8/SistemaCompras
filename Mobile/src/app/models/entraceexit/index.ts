@@ -3,4 +3,5 @@ export type EntraceExit = {
   productId: number;
   quantity: number;
   type: number;
+  status: boolean;
 };

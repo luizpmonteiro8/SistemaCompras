@@ -79,7 +79,7 @@ class Home extends Component<Props> {
               >
                 <Card.Title title="Compras por mês" />
                 <Card.Content>
-                  <Title>Ano:</Title>
+                  <Title>Ano: 2021</Title>
                 </Card.Content>
 
                 <BarChart

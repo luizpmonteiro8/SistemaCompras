@@ -39,7 +39,7 @@ const Login = ({ setLoading, loading }: Props) => {
       route.push('home');
       setLoading(false);
     }
-    if (res.error.includes('failed')) {
+    if (res.error?.includes('failed')) {
       if (controlMessage) {
         controlMessage = false;
         messageInfo('Aguarde enquanto servidor ativa!');

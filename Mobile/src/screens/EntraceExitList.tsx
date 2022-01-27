@@ -83,6 +83,10 @@ class EntraceExitList extends Component<Props> {
                       <Text>
                         Tipo: {entraceexit.type == 0 ? 'Entrada' : 'Saida'}
                       </Text>
+                      <Text>
+                        Status:
+                        {entraceexit.status == true ? 'Ativo' : 'Desativado'}
+                      </Text>
                     </View>
                     <View style={{ justifyContent: 'center' }}>
                       <Button
